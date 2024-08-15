@@ -63,6 +63,9 @@ def lambda_handler(event, context):
                             "url": url
                         }
                     )
+                    
+                    # TODO: Adicionar o preço total sem desconto e o percentual de desconto
+                
                 except:
                     continue
 

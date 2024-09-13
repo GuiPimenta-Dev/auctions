@@ -1,5 +1,43 @@
 from openpyxl import Workbook
 
+from fuzzywuzzy import process
+import re
+
+# Dictionary with property types and their IDs
+PROPERTY_TYPES = {
+    "agencia": 22,
+    "apartamento": 2,
+    "area_industrial": 16,
+    "area_rural": 5,
+    "casa": 1,
+    "comercial": 6,
+    "galpao": 20,
+    "garagem": 13,
+    "outros": 11,
+    "terreno": 3
+}
+
+def find_property_types(inputs: list) -> list:
+    results = []
+
+    for s in inputs:
+        # Normalize the input string
+        s_normalized = re.sub(r'\s+', ' ', s.strip()).lower()
+
+        # Normalize the dictionary keys
+        normalized_property_types = {re.sub(r'\s+', ' ', k).lower(): v for k, v in PROPERTY_TYPES.items()}
+
+        # Find the closest property type using fuzzy matching
+        closest_property_type = process.extractOne(s_normalized, normalized_property_types.keys())
+
+        if not closest_property_type:
+            continue
+        type_id = normalized_property_types[closest_property_type[0]]
+        results.append(str(type_id))
+
+    return results
+
+
 def save_to_excel(results, filename="output.xlsx"):
   wb = Workbook()
   ws = wb.active

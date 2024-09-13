@@ -1,6 +1,3 @@
-from functions.odoo.config import OdooConfig
-from functions.trello.trello.config import TrelloConfig
-from functions.robots.leiloes_imovel.config import LeiloesImovelConfig
 from functions.robots.leiloes_imovel.config import LeiloesImovelConfig
 from aws_cdk import Stack
 from constructs import Construct
@@ -16,10 +13,3 @@ class LambdaStack(Stack):
 
         # Robots
         LeiloesImovelConfig(self.services)
-        LeiloesImovelConfig(self.services)
-
-        # Trello
-        TrelloConfig(self.services)
-
-        # Odoo
-        OdooConfig(self.services)

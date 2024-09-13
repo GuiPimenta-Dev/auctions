@@ -1,0 +1,17 @@
+[
+    {
+        "name": "LeiloesImovel",
+        "path": "./functions/robots/leiloes_imovel",
+        "description": "A scraper",
+        "timeout": 60,
+        "triggers": [
+            {
+                "service": "api_gateway",
+                "trigger": "/robots",
+                "method": "POST",
+                "public": true
+            }
+        ],
+        "invocations": []
+    }
+]

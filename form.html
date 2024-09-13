@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate Interest Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .form-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+            width: 600px;
+            box-sizing: border-box;
+        }
+
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="date"],
+        .form-group input[type="tel"],
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+        }
+
+        .form-group button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        .form-group button:hover {
+            background-color: #45a049;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            padding-left: 5px; /* Adjust to ensure enough space */
+        }
+
+        .radio-group input {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Formulário de Interesse Imobiliário</h2>
+        <form id="interest_form">
+            <div class="form-group">
+                <label for="full_name">Nome completo:</label>
+                <input type="text" id="full_name" name="full_name" required>
+            </div>
+            <div class="form-group">
+                <label for="email_address">Endereço de e-mail:</label>
+                <input type="email" id="email_address" name="email_address" required>
+            </div>
+            <div class="form-group">
+                <label for="birth_date">Data de Nascimento:</label>
+                <input type="date" id="birth_date" name="birth_date" required>
+            </div>
+            <div class="form-group">
+                <label for="phone_number">Celular:</label>
+                <input type="tel" id="phone_number" name="phone_number" placeholder="(00) 00000-0000" required>
+            </div>
+            <div class="form-group">
+                <label>Tipo de imóvel para rastreio:</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="property_type" value="Casa" required> Casa</label>
+                    <label><input type="radio" name="property_type" value="Apartamento"> Apartamento</label>
+                    <label><input type="radio" name="property_type" value="Sala comercial"> Sala comercial</label>
+                    <label><input type="radio" name="property_type" value="Loja comercial"> Loja comercial</label>
+                    <label><input type="radio" name="property_type" value="Terreno urbano"> Terreno urbano</label>
+                    <label><input type="radio" name="property_type" value="Terreno rural"> Terreno rural</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="state_of_interest">Estado de interesse para busca:</label>
+                <input type="text" id="state_of_interest" name="state_of_interest" placeholder="Paraná">
+            </div>
+            <div class="form-group">
+                <label for="city_of_interest">Cidade de interesse para busca:</label>
+                <input type="text" id="city_of_interest" name="city_of_interest" placeholder="Curitiba">
+            </div>
+            <div class="form-group">
+                <label for="top_neighborhoods">Quais os 5 principais bairros de sua pretensão?</label>
+                <input type="text" id="top_neighborhoods" name="top_neighborhoods" placeholder="Centro, Batel, Água Verde, Santa Felicidade, Juvevê">
+            </div>
+            <div class="form-group">
+                <label for="investment_amount">Valor disponível para investimento:</label>
+                <input type="text" id="investment_amount" name="investment_amount" placeholder="R$ 1000.000">
+            </div>
+            <div class="form-group">
+                <label>Formas de pagamento relevantes:</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="payment_methods" value="À vista" required> À vista</label>
+                    <label><input type="radio" name="payment_methods" value="Entrada + financiamento"> Entrada + financiamento</label>
+                    <label><input type="radio" name="payment_methods" value="Entrada + parcelamento sem juros"> Entrada + parcelamento sem juros</label>
+                    <label><input type="radio" name="payment_methods" value="100% Financiamento"> 100% Financiamento</label>
+                    <label><input type="radio" name="payment_methods" value="Uso de carta de crédito"> Uso de carta de crédito</label>
+                    <label><input type="radio" name="payment_methods" value="FGTS + financiamento"> FGTS + financiamento</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit">Enviar</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('interest_form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Collect form data
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+            
+            console.log(data);
+            // Make API call
+            fetch('https://api.example.com/submit', { // Replace with your API URL
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(result => {
+                alert('Form successfully submitted!');
+                // Optional: Redirect or reset the form
+                this.reset();
+            })
+            .catch(error => {
+                console.error('Error submitting the form:', error);
+                alert('There was an error submitting the form.');
+            });
+        });
+    </script>
+</body>
+</html>

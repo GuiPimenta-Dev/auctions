@@ -27,7 +27,7 @@ class Lambda:
         timeout=1,
     ):
 
-        layers = layers + [ self.layers.get_location_layer, self.layers.robots_layer ]
+        layers = layers + [ self.layers.get_location_layer, self.layers.robots_layer, self.layers.sm_utils_layer ]
 
         function = Function(
             scope=self.scope,

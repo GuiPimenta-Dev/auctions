@@ -30,3 +30,8 @@ class Layers:
             id="RequestsLayer",
             layer_version_arn="arn:aws:lambda:us-east-2:770693421928:layer:Klayers-p310-requests:12",
         )
+        self.lxml_layer = _lambda.LayerVersion.from_layer_version_arn(
+            scope,
+            id='LxmlLayer',
+            layer_version_arn='arn:aws:lambda:us-east-2:211125768252:layer:lxml:1',
+         )

@@ -124,7 +124,7 @@ def set_cover(card_id, image_url):
 
 def css_select(element, selector):
     found = element.select_one(selector)
-    return found.get_text(strip=True) if found else None
+    return found.get_text(strip=True) if found else "-"
 
 def css_select_list(element, selector):
     return [e.get_text(strip=True) for e in element.select(selector)]

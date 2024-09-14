@@ -3,8 +3,8 @@ import json
 import get_location
 import requests
 from bs4 import BeautifulSoup
-
-from . import utils
+import utils
+# from . import utils
 
 
 def lambda_handler(event, context):
@@ -12,13 +12,14 @@ def lambda_handler(event, context):
     record = event["Records"][0]
     message = json.loads(record["Sns"]["Message"])
 
-    full_name = message.get("full_name")
-    property_type = message.get("property_type")
-    state_of_interest = message.get("state_of_interest")
-    city_of_interest = message.get("city_of_interest")
-    top_neighborhoods = message.get("top_neighborhoods")
-    investment_amount = message.get("investment_amount")
-    payment_methods = message.get("payment_methods")
+    property_type = message["property_information"].get("property_type")
+    state_of_interest = message["property_information"].get("state_of_interest")
+    city_of_interest = message["property_information"].get("city_of_interest")
+    top_neighborhoods = message["property_information"].get("top_neighborhoods")
+    investment_amount = message["property_information"].get("investment_amount")
+    payment_methods = message["property_information"].get("payment_methods")
+
+    personal_information = message["personal_information"]
 
     state_of_interest = get_location.find_state(state_of_interest)
     all_cities = requests.get("https://www.leilaoimovel.com.br/getAllCities").json()["locations"]
@@ -60,7 +61,18 @@ def lambda_handler(event, context):
             general_info = utils.get_general_info(soup)
             files = utils.get_files(soup)
 
-            card_title = f"""Cliente: {full_name}
+            # card_titile should be each key of personal_information : value
+            card_title = f"""
+Informações do Cliente:
+Cliente: {personal_information['full_name']}
+RG: {personal_information['rg']}
+CPF: {personal_information['cpf']}
+Telefone: {personal_information['phone_number']}
+Email: {personal_information['email_address']}
+Profissão: {personal_information['profession']}
+Endereço: {personal_information['address']}
+
+Informações do Imóvel:
 Tipo de imóvel: {property_type}
 Cidade: {city_of_interest}
 Estado: {state_of_interest['state']}
@@ -77,4 +89,3 @@ Formas de pagamento: {', '.join(payment_methods)}
             )
             card = utils.create_a_card(first_list["id"], card_title, card_description)
             utils.set_cover(card["id"], image)
-

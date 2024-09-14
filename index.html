@@ -208,20 +208,24 @@
 
             // Convert the data object to match the expected format
             const formattedData = {
-                full_name: data.full_name,
-                email_address: data.email_address,
-                birth_date: data.birth_date,
-                rg: data.rg,
-                cpf: data.cpf,
-                profession: data.profession,
-                address: data.address,
-                phone_number: data.phone_number,
-                property_type: data.property_type,
-                state_of_interest: data.state_of_interest,
-                city_of_interest: data.city_of_interest,
-                top_neighborhoods: data.top_neighborhoods.join(', '), // Convert array to string
-                investment_amount: data.investment_amount,
-                payment_methods: data.payment_methods.join(', ') // Convert array to string
+                personal_information: {
+                    full_name: data.full_name,
+                    email_address: data.email_address,
+                    birth_date: data.birth_date,
+                    rg: data.rg,
+                    cpf: data.cpf,
+                    profession: data.profession,
+                    address: data.address,
+                    phone_number: data.phone_number
+                },
+                property_information: {
+                    property_type: data.property_type,
+                    state_of_interest: data.state_of_interest,
+                    city_of_interest: data.city_of_interest,
+                    top_neighborhoods: data.top_neighborhoods.join(', '),
+                    investment_amount: data.investment_amount,
+                    payment_methods: data.payment_methods.join(', ')
+                }
             };
 
             // Send the formatted data to the server

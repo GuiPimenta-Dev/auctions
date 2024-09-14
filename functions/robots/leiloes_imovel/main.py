@@ -71,7 +71,7 @@ Email: {personal_information['email_address']}
 Profissão: {personal_information['profession']}
 Endereço: {personal_information['address']}
 
-Informações do Imóvel:
+Informações do Imóvel Desejado:
 Tipo de imóvel: {property_type}
 Cidade: {city_of_interest}
 Estado: {state_of_interest['state']}

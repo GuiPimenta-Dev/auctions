@@ -75,9 +75,9 @@ Informações do Imóvel:
 Tipo de imóvel: {property_type}
 Cidade: {city_of_interest}
 Estado: {state_of_interest['state']}
-Bairro: {', '.join(top_neighborhoods)}
+Bairro: {top_neighborhoods}
 Valor de Investimento: {investment_amount}
-Formas de pagamento: {', '.join(payment_methods)}
+Formas de pagamento: {payment_methods}
 """
 
             lists = utils.get_lists()

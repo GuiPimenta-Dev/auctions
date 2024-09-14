@@ -222,9 +222,9 @@
                     property_type: data.property_type,
                     state_of_interest: data.state_of_interest,
                     city_of_interest: data.city_of_interest,
-                    top_neighborhoods: data.top_neighborhoods,
+                    top_neighborhoods: data.top_neighborhoods.join(', '),
                     investment_amount: data.investment_amount,
-                    payment_methods: data.payment_methods
+                    payment_methods: data.payment_methods.join(', ')
                 }
             };
 

@@ -26,7 +26,7 @@ class Lambda:
         timeout=1,
     ):
 
-        layers = layers + [ self.layers.get_location_layer, self.layers.fuzzywuzzy_layer]
+        layers = layers + [ self.layers.get_location_layer, self.layers.fuzzywuzzy_layer, self.layers.bs4_layer, self.layers.requests_layer ]
 
         function = Function(
             scope=self.scope,

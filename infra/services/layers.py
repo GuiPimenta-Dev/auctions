@@ -18,3 +18,15 @@ class Layers:
             compatible_runtimes=[_lambda.Runtime.PYTHON_3_9],
             description="",
         )
+
+        self.bs4_layer = _lambda.LayerVersion.from_layer_version_arn(
+            scope,
+            id="BS4Layer",
+            layer_version_arn="arn:aws:lambda:us-east-2:770693421928:layer:Klayers-p310-beautifulsoup4:3",
+        )
+
+        self.requests_layer = _lambda.LayerVersion.from_layer_version_arn(
+            scope,
+            id="RequestsLayer",
+            layer_version_arn="arn:aws:lambda:us-east-2:770693421928:layer:Klayers-p310-requests:12",
+        )

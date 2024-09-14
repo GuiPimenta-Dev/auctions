@@ -2,11 +2,12 @@ from fuzzywuzzy import process
 import re
 import requests
 import os
+import sm_utils
 
-API_KEY = os.environ["TRELLO_API_KEY"] = os.getenv("TRELLO_API_KEY")
-TOKEN = os.environ["TRELLO_TOKEN"] = os.getenv("TRELLO_TOKEN")
-BOARD_ID = os.environ["TRELLO_BOARD_ID"] = os.getenv("TRELLO_BOARD_ID")
-
+TRELLO_SECRET = sm_utils.get_secret("Trello")
+API_KEY = TRELLO_SECRET["KEY"]
+TOKEN = TRELLO_SECRET["TOKEN"]
+BOARD_ID = "oMpUvmUW"
 
 def add_link_to_card(card_id, attachment_url, description=None):
     url = f"https://api.trello.com/1/cards/{card_id}/attachments"

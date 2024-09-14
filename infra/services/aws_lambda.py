@@ -6,11 +6,12 @@ from lambda_forge.trackers import function
 
 
 class Lambda:
-    def __init__(self, scope, context, layers) -> None:
+    def __init__(self, scope, context, layers, sm) -> None:
         self.functions = {}
         self.scope = scope
         self.context = context
         self.layers = layers
+        self.sm = sm
 
     @function
     def create_function(
@@ -41,6 +42,8 @@ class Lambda:
             timeout=Duration.minutes(timeout),
             memory_size=memory_size,
         )
+
+        self.sm.trello_secret.grant_read(function)
 
         self.functions[name] = function
         return function

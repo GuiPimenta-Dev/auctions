@@ -9,7 +9,6 @@ class LeiloesImovelConfig:
             path="./functions/robots",
             description="A scraper",
             directory="leiloes_imovel",
-  
         )
 
         services.api_gateway.create_endpoint("POST", "/robots", function, public=True)

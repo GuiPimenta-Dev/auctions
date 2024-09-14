@@ -90,6 +90,14 @@
         .container {
             padding: 40px 20px;
         }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #ccc;
+        }
     </style>
 </head>
 <body>
@@ -97,6 +105,10 @@
     <div class="container">
         <h1>Formulário de Interesse</h1>
         <form id="interest_form">
+            
+            <!-- Seção: Informações do Cliente -->
+            <div class="section-title">Informações do Cliente</div>
+
             <div class="form-group">
                 <label for="full_name">Nome completo:</label>
                 <input type="text" id="full_name" name="full_name" required>
@@ -143,27 +155,43 @@
             </div>
 
             <div class="form-group">
-                <label for="budget">Pretensão de valor de orçamento destinado ao investimento:</label>
-                <input type="text" id="budget" name="budget" required>
+                <label>Possui experiência em leilões anteriores?</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="auction_experience" value="Sim" required> Sim</label>
+                    <label><input type="radio" name="auction_experience" value="Não"> Não</label>
+                </div>
             </div>
 
             <div class="form-group">
-                <label for="state">Estado de interesse:</label>
-                <input type="text" id="property_state" name="property_state" required>
+                <label for="auction_question">Qual sua principal dúvida sobre leilões?</label>
+                <textarea id="auction_question" name="auction_question" rows="4"></textarea>
+            </div>
+
+            <!-- Seção: Informações do Imóvel -->
+            <div class="section-title">Informações do Imóvel</div>
+
+            <div class="form-group">
+                <label for="budget">Valor de orçamento destinado ao investimento:</label>
+                <input type="text" id="budget" name="budget" placeholder="R$ 1000.000">
             </div>
 
             <div class="form-group">
-                <label for="state">Cidade de interesse:</label>
-                <input type="text" id="property_city" name="property_city" required>
+                <label for="property_state">Estado de interesse:</label>
+                <input type="text" id="property_state" name="property_state" placeholder="Paraná" required>
             </div>
 
             <div class="form-group">
-                <label for="state">5 Bairros de interesse:</label>
-                <input type="text" id="property_neighborhood" name="property_neighborhood" required>
+                <label for="property_city">Cidade de interesse:</label>
+                <input type="text" id="property_city" name="property_city" placeholder="Curitiba" required>
             </div>
 
             <div class="form-group">
-                <label>Tipo de imóvel de interesse:</label>
+                <label for="property_neighborhood">5 Bairros de interesse:</label>
+                <input type="text" id="property_neighborhood" name="property_neighborhood"  placeholder="Centro, Batel, Água Verde, Santa Felicidade, Juvevê" required>
+            </div>
+
+            <div class="form-group">
+                <label>Tipo do imóvel:</label>
                 <div class="radio-group">
                     <label><input type="radio" name="property_type" value="Casa" required> Casa</label>
                     <label><input type="radio" name="property_type" value="Apartamento"> Apartamento</label>
@@ -180,16 +208,6 @@
                     <label><input type="radio" name="property_purpose" value="Investimento" required> Investimento</label>
                     <label><input type="radio" name="property_purpose" value="Moradia"> Moradia</label>
                 </div>
-            </div>
-
-            <div class="form-group">
-                <label>Possui experiência em leilões anteriores?</label>
-                <input type="text" id="auction_experience" name="auction_experience">
-            </div>
-
-            <div class="form-group">
-                <label for="auction_question">Qual sua principal dúvida sobre leilões?</label>
-                <textarea id="auction_question" name="auction_question" rows="4" ></textarea>
             </div>
 
             <div class="form-group">
@@ -238,7 +256,7 @@
                     property_purpose: data.property_purpose,
                 },
                 property_information: {
-                    budget: data.budget,
+                    budget: data.budget.replace('R$ ', ''),
                     property_type: data.property_type,
                     property_state: data.property_state,
                     property_city: data.property_city,
@@ -266,6 +284,5 @@
             });
         });
     </script>
-
 </body>
 </html>

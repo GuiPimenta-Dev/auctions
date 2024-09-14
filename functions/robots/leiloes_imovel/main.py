@@ -77,7 +77,7 @@ Experiência com leilões: {personal_information['experience']}
 Duvídas: {personal_information['auction_question']}
 
 
-Informações do Imóvel Desejado:
+Informações do Imóvel:
 Tipo de imóvel: {property_type}
 Cidade: {city_of_interest}
 Estado: {state_of_interest['state']}

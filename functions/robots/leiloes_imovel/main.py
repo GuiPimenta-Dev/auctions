@@ -3,8 +3,7 @@ import json
 import get_location
 import requests
 from bs4 import BeautifulSoup
-import utils
-# from . import utils
+from . import utils
 
 
 def lambda_handler(event, context):

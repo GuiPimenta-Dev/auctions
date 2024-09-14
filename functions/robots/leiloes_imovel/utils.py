@@ -1,8 +1,9 @@
-from fuzzywuzzy import process
-import re
-import requests
 import os
+import re
+
+import requests
 import sm_utils
+from fuzzywuzzy import process
 
 TRELLO_SECRET = sm_utils.get_secret("Trello")
 API_KEY = TRELLO_SECRET["KEY"]

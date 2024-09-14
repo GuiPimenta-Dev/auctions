@@ -6,12 +6,30 @@
         "timeout": 60,
         "triggers": [
             {
+                "service": "sns",
+                "trigger": "auctions_topic"
+            }
+        ],
+        "invocations": []
+    },
+    {
+        "name": "Trigger",
+        "path": "./functions/trigger",
+        "description": "Trigger the robots",
+        "timeout": 60,
+        "triggers": [
+            {
                 "service": "api_gateway",
-                "trigger": "/robots",
+                "trigger": "/trigger",
                 "method": "POST",
                 "public": true
             }
         ],
-        "invocations": []
+        "invocations": [
+            {
+                "service": "sns",
+                "resource": "auctions_topic"
+            }
+        ]
     }
 ]

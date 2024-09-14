@@ -1,24 +1,24 @@
 import json
+
+import get_location
 import requests
 from bs4 import BeautifulSoup
-import utils
-import get_location
 
-
-
+from . import utils
 
 
 def lambda_handler(event, context):
-    # Pega a cidade ou estado que a Marcela quer fazer a busca
-    body = json.loads(event["body"])
 
-    full_name = body.get("full_name")
-    property_type = body.get("property_type")
-    state_of_interest = body.get("state_of_interest")
-    city_of_interest = body.get("city_of_interest")
-    top_neighborhoods = body.get("top_neighborhoods")
-    investment_amount = body.get("investment_amount")
-    payment_methods = body.get("payment_methods")
+    record = event["Records"][0]
+    message = json.loads(record["Sns"]["Message"])
+
+    full_name = message.get("full_name")
+    property_type = message.get("property_type")
+    state_of_interest = message.get("state_of_interest")
+    city_of_interest = message.get("city_of_interest")
+    top_neighborhoods = message.get("top_neighborhoods")
+    investment_amount = message.get("investment_amount")
+    payment_methods = message.get("payment_methods")
 
     state_of_interest = get_location.find_state(state_of_interest)
     all_cities = requests.get("https://www.leilaoimovel.com.br/getAllCities").json()["locations"]
@@ -78,22 +78,3 @@ Formas de pagamento: {', '.join(payment_methods)}
             card = utils.create_a_card(first_list["id"], card_title, card_description)
             utils.set_cover(card["id"], image)
 
-
-# Sample event to test the lambda function
-event = {
-    "body": json.dumps(
-        {
-            "full_name": "Guilherme Pimenta",
-            "email_address": "marcela@example.com",
-            "birth_date": "1990-01-01",
-            "phone_number": "11999999999",
-            "property_type": "Apartamento",
-            "state_of_interest": "Santa Catarina",
-            "city_of_interest": "Balneário Camboriú",
-            "top_neighborhoods": ["Centro", "Barra Sul"],
-            "investment_amount": 100000,
-            "payment_methods": ["Financiamento", "A vista"],
-        }
-    )
-}
-lambda_handler(event, {})

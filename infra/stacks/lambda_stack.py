@@ -1,6 +1,8 @@
-from functions.robots.leiloes_imovel.config import LeiloesImovelConfig
 from aws_cdk import Stack
 from constructs import Construct
+
+from functions.robots.leiloes_imovel.config import LeiloesImovelConfig
+from functions.trigger.config import TriggerConfig
 from infra.services import Services
 
 
@@ -13,3 +15,6 @@ class LambdaStack(Stack):
 
         # Robots
         LeiloesImovelConfig(self.services)
+
+        # Trigger
+        TriggerConfig(self.services)

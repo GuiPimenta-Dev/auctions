@@ -11,4 +11,4 @@ class LeiloesImovelConfig:
             directory="leiloes_imovel",
         )
 
-        services.api_gateway.create_endpoint("POST", "/robots", function, public=True)
+        services.sns.create_trigger("auctions_topic", function)

@@ -1,0 +1,16 @@
+from infra.services import Services
+
+
+class TriggerConfig:
+    def __init__(self, services: Services) -> None:
+
+        function = services.aws_lambda.create_function(
+            name="Trigger",
+            path="./functions/trigger",
+            description="Trigger the robots",
+            environment={"TOPIC": services.sns.auctions_topic.topic_arn},
+        )
+
+        services.api_gateway.create_endpoint("POST", "/trigger", function, public=True)
+
+        services.sns.grant_publish("auctions_topic", function)

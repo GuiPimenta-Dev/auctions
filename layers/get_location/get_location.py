@@ -1,5 +1,6 @@
-from fuzzywuzzy import process
 import re
+
+from fuzzywuzzy import process
 
 states = {
     "Acre": "AC",

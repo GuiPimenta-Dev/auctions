@@ -1,5 +1,6 @@
-import requests
 import os
+
+import requests
 
 API_KEY = os.environ["TRELLO_API_KEY"] = os.getenv("TRELLO_API_KEY")
 TOKEN = os.environ["TRELLO_TOKEN"] = os.getenv("TRELLO_TOKEN")

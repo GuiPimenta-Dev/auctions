@@ -7,5 +7,5 @@ class SecretsManager:
         self.trello_secret = sm.Secret.from_secret_complete_arn(
             scope,
             id="TrelloSecret",
-            secret_complete_arn="arn:aws:secretsmanager:us-east-2:211125768252:secret:Trello-szuLNz"
+            secret_complete_arn="arn:aws:secretsmanager:us-east-2:211125768252:secret:Trello-szuLNz",
         )

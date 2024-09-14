@@ -186,7 +186,7 @@
             </div>
 
             <div class="form-group">
-                <label for="property_neighborhood">5 Bairros de interesse:</label>
+                <label for="property_neighborhood">Bairros de interesse:</label>
                 <input type="text" id="property_neighborhood" name="property_neighborhood"  placeholder="Centro, Batel, Água Verde, Santa Felicidade, Juvevê" required>
             </div>
 
@@ -260,8 +260,8 @@
                     property_type: data.property_type,
                     property_state: data.property_state,
                     property_city: data.property_city,
-                    property_neighborhood: data.property_neighborhood.join(', '),
-                    payment_methods: data.payment_methods.join(', ')
+                    property_neighborhood: data.property_neighborhood,
+                    payment_methods: data.payment_methods
                 }
             };
 

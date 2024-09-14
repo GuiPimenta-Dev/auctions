@@ -133,3 +133,48 @@ def set_cover(card_id, image_url):
     cover_data = {"cover": {"idAttachment": attachment_id, "brightness": "dark"}}
 
     requests.put(cover_url, params=cover_query, json=cover_data)
+
+
+def css_select(element, selector):
+    found = element.select_one(selector)
+    return found.get_text(strip=True) if found else None
+
+def css_select_list(element, selector):
+    return [e.get_text(strip=True) for e in element.select(selector)]
+
+
+def get_general_info(soup):
+    general_info = soup.select('div.more.row.pb-2 div')
+    info = []
+    for i in general_info:
+        title = "".join(css_select_list(i, "b"))
+        text = "".join(css_select_list(i, "*")).replace("\n", "").replace(f"{title}", "").strip()
+        if text:
+            info.append(f"**{title}** {text}")
+    return info
+
+
+def get_files(soup):
+    general_files = soup.select("div.documments.row.pb-4 a")
+    files = []
+    for i in general_files:
+        title = css_select(i, "*")
+        link = i.get("href", "").strip()
+        if title and link:
+            files.append({"title": title, "link": link})
+    return files
+
+
+def create_card_description(price, discount, name, address, image, url, general_info, files):
+    general_info_text = '\n'.join(f"- {item}" for item in general_info)
+    files_text = '\n'.join(f"- [{item['title']}]({item['link']})" for item in files)
+
+    return f"""
+- **Nome:** {name}
+- **Endereço:** {address}  
+- **Preço:** {price}  
+- **Desconto:** {discount}  
+{general_info_text}
+- [Site do Imóvel]({url})
+{files_text}
+    """

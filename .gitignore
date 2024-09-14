@@ -155,3 +155,4 @@ coverage.xml
 # Log reports #
 ####################
 *.log
+robots/

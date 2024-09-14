@@ -66,14 +66,14 @@ Informações do Cliente:
 Cliente: {personal_information['full_name']}
 CPF/CNPJ: {personal_information['cpf_cnpj']}
 Telefone: {personal_information['phone_number']}
-Email: {personal_information['email_address']}
+Email: {personal_information['email']}
 Profissão: {personal_information['profession']}
 Endereço: {personal_information['address']}
 Cidade: {personal_information['city']}
 Estado: {personal_information['state']}
 País: {personal_information['country']}
 Finalidade do imóvel: {personal_information['property_purpose']}
-Experiência com leilões: {personal_information['experience']}
+Experiência com leilões: {personal_information['auction_experience']}
 Duvídas: {personal_information['auction_question']}
 
 

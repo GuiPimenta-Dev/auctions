@@ -1,5 +1,6 @@
 from infra.services import Services
 
+
 class LeiloesImovelConfig:
     def __init__(self, services: Services) -> None:
 
@@ -8,9 +9,10 @@ class LeiloesImovelConfig:
             path="./functions/robots",
             description="A scraper",
             directory="leiloes_imovel",
-            layers=[services.layers.get_location_layer, services.layers.fuzzywuzzy_layer],
+            layers=[
+                services.layers.get_location_layer,
+                services.layers.fuzzywuzzy_layer,
+            ],
         )
 
         services.api_gateway.create_endpoint("POST", "/robots", function, public=True)
-
-            

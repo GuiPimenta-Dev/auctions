@@ -1,5 +1,6 @@
 from infra.services import Services
 
+
 class TrelloConfig:
     def __init__(self, services: Services) -> None:
 
@@ -7,9 +8,7 @@ class TrelloConfig:
             name="Trello",
             path="./functions/trello",
             description="save attachment on trello",
-            directory="trello"
+            directory="trello",
         )
 
         services.api_gateway.create_endpoint("POST", "/trello", function, public=True)
-
-            

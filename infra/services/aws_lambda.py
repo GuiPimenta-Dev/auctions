@@ -6,10 +6,11 @@ from lambda_forge.trackers import function
 
 
 class Lambda:
-    def __init__(self, scope, context) -> None:
+    def __init__(self, scope, context, layers) -> None:
         self.functions = {}
         self.scope = scope
         self.context = context
+        self.layers = layers
 
     @function
     def create_function(
@@ -24,6 +25,8 @@ class Lambda:
         runtime=Runtime.PYTHON_3_9,
         timeout=1,
     ):
+
+        layers = layers + [ self.layers.get_location_layer, self.layers.fuzzywuzzy_layer]
 
         function = Function(
             scope=self.scope,

@@ -27,14 +27,15 @@ states = {
     "Santa Catarina": "SC",
     "São Paulo": "SP",
     "Sergipe": "SE",
-    "Tocantins": "TO"
+    "Tocantins": "TO",
 }
 
+
 def find_state(s: str) -> dict:
-    s = re.sub(r'\s+', ' ', s.strip()).lower()
-    
-    normalized_states = {re.sub(r'\s+', ' ', k).lower(): v for k, v in states.items()}
-    
+    s = re.sub(r"\s+", " ", s.strip()).lower()
+
+    normalized_states = {re.sub(r"\s+", " ", k).lower(): v for k, v in states.items()}
+
     closest_state = process.extractOne(s, normalized_states.keys())
     if closest_state:
         state_name = closest_state[0]
@@ -42,4 +43,3 @@ def find_state(s: str) -> dict:
         return {"state": state_name.title(), "abbreviation": abbreviation}
     else:
         return {"state": None, "abbreviation": None}
-

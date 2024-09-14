@@ -8,4 +8,5 @@ def lambda_handler(event, context):
     attachment = create_attachment(card["id"], "campo_grande.xlsx")
     pass
 
+
 lambda_handler({}, {})

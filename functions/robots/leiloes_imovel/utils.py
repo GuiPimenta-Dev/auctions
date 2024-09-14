@@ -2,6 +2,28 @@ from openpyxl import Workbook
 
 from fuzzywuzzy import process
 import re
+import requests
+import os
+
+API_KEY = os.environ["TRELLO_API_KEY"] = os.getenv("TRELLO_API_KEY")
+TOKEN = os.environ["TRELLO_TOKEN"] = os.getenv("TRELLO_TOKEN")
+BOARD_ID = os.environ["TRELLO_BOARD_ID"] = os.getenv("TRELLO_BOARD_ID")
+
+
+def add_link_to_card(card_id, attachment_url, description=None):
+    url = f"https://api.trello.com/1/cards/{card_id}/attachments"
+    query = {
+        'key': API_KEY,
+        'token': TOKEN,
+        'url': attachment_url
+    }
+    data = {
+        'description': description
+    } if description else {}
+    
+    response = requests.post(url, params=query, data=data)
+    
+    
 
 # Dictionary with property types and their IDs
 PROPERTY_TYPES = {
@@ -14,21 +36,26 @@ PROPERTY_TYPES = {
     "galpao": 20,
     "garagem": 13,
     "outros": 11,
-    "terreno": 3
+    "terreno": 3,
 }
+
 
 def find_property_types(inputs: list) -> list:
     results = []
 
     for s in inputs:
         # Normalize the input string
-        s_normalized = re.sub(r'\s+', ' ', s.strip()).lower()
+        s_normalized = re.sub(r"\s+", " ", s.strip()).lower()
 
         # Normalize the dictionary keys
-        normalized_property_types = {re.sub(r'\s+', ' ', k).lower(): v for k, v in PROPERTY_TYPES.items()}
+        normalized_property_types = {
+            re.sub(r"\s+", " ", k).lower(): v for k, v in PROPERTY_TYPES.items()
+        }
 
         # Find the closest property type using fuzzy matching
-        closest_property_type = process.extractOne(s_normalized, normalized_property_types.keys())
+        closest_property_type = process.extractOne(
+            s_normalized, normalized_property_types.keys()
+        )
 
         if not closest_property_type:
             continue
@@ -39,17 +66,17 @@ def find_property_types(inputs: list) -> list:
 
 
 def save_to_excel(results, filename="output.xlsx"):
-  wb = Workbook()
-  ws = wb.active
+    wb = Workbook()
+    ws = wb.active
 
-  headers = results[0].keys()
-  ws.append(list(headers))
+    headers = results[0].keys()
+    ws.append(list(headers))
 
-  for entry in results:
-      ws.append(list(entry.values()))     
+    for entry in results:
+        ws.append(list(entry.values()))
 
-  wb.save(filename)
-  
+    wb.save(filename)
+
 
 def xpath(element, xpath):
     elements = element.xpath(xpath)
@@ -57,59 +84,67 @@ def xpath(element, xpath):
         return None
     return elements[0].strip()
 
+
 def xpath_list(element, xpath):
     elements = element.xpath(xpath)
     if not elements:
         return []
     return elements
 
-import requests
-import os
-
-API_KEY = os.environ["TRELLO_API_KEY"] = os.getenv("TRELLO_API_KEY")
-TOKEN = os.environ["TRELLO_TOKEN"] = os.getenv("TRELLO_TOKEN")
-BOARD_ID = os.environ["TRELLO_BOARD_ID"] = os.getenv("TRELLO_BOARD_ID")
 
 def get_lists():
 
-  url = f"https://api.trello.com/1/boards/{BOARD_ID}/lists"
+    url = f"https://api.trello.com/1/boards/{BOARD_ID}/lists"
 
-  querystring = {"key":API_KEY,"token":TOKEN}
+    querystring = {"key": API_KEY, "token": TOKEN}
 
-  response = requests.request("GET", url, params=querystring)
+    response = requests.request("GET", url, params=querystring)
 
-  return response.json()
+    return response.json()
+
 
 def create_a_card(list_id, name, description):
 
-  url = "https://api.trello.com/1/cards"
+    url = "https://api.trello.com/1/cards"
 
-  query = {
-    'idList': list_id,
-    'key': API_KEY,
-    'token': TOKEN,
-    "name": name,
-    "desc": description
-  }
+    query = {
+        "idList": list_id,
+        "key": API_KEY,
+        "token": TOKEN,
+        "name": name,
+        "desc": description,
+    }
 
-  response = requests.request(
-    "POST",
-    url,
-    params=query
-  )
-  
-  return response.json()
+    response = requests.request("POST", url, params=query)
+
+    return response.json()
+
 
 def create_attachment(card_id, filename):
 
-  url = f"https://api.trello.com/1/cards/{card_id}/attachments"
-  files = {'file': open(filename, 'rb')}
+    url = f"https://api.trello.com/1/cards/{card_id}/attachments"
+    files = {"file": open(filename, "rb")}
 
-  querystring = {"key":API_KEY,"token":TOKEN}
+    querystring = {"key": API_KEY, "token": TOKEN}
 
-  response = requests.request(
-    "POST",
-    url,
-    params=querystring,
-    files=files
-  )
+    response = requests.request("POST", url, params=querystring, files=files)
+
+
+def set_cover(card_id, image_url):
+
+    attach_url = f"https://api.trello.com/1/cards/{card_id}/attachments"
+    attach_query = {"key": API_KEY, "token": TOKEN, "url": image_url}
+
+    attach_response = requests.post(attach_url, params=attach_query)
+    if attach_response.status_code != 200:
+        return f"Failed to attach image: {attach_response.text}"
+
+    attachment_id = attach_response.json().get("id")
+    if not attachment_id:
+        return "Failed to retrieve attachment ID."
+
+    cover_url = f"https://api.trello.com/1/cards/{card_id}"
+    cover_query = {"key": API_KEY, "token": TOKEN}
+    cover_data = {"cover": {"idAttachment": attachment_id, "brightness": "dark"}}
+
+    requests.put(cover_url, params=cover_query, json=cover_data)

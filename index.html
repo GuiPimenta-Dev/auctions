@@ -19,12 +19,13 @@
 
         .form-container {
             background-color: #ffffff;
-            padding: 40px;
+            padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 100%;
-            width: 600px;
+            width: 100%;
+            max-width: 800px;
             box-sizing: border-box;
+            overflow: hidden;
         }
 
         .form-container h2 {
@@ -34,11 +35,12 @@
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
         }
 
         .form-group label {
-            display: block;
             margin-bottom: 5px;
             font-weight: bold;
             color: #555;
@@ -50,10 +52,10 @@
         .form-group input[type="tel"],
         .form-group textarea {
             width: 100%;
+            max-width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            margin-top: 5px;
             box-sizing: border-box;
         }
 
@@ -88,11 +90,21 @@
             margin-bottom: 8px;
             cursor: pointer;
             font-size: 16px;
-            padding-left: 5px; /* Adjust to ensure enough space */
+            padding-left: 5px;
         }
 
         .radio-group input {
             margin-right: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .form-group input[type="text"],
+            .form-group input[type="email"],
+            .form-group input[type="date"],
+            .form-group input[type="tel"],
+            .form-group textarea {
+                width: calc(100% - 20px); /* Adjust width for small screens */
+            }
         }
     </style>
 </head>
@@ -207,19 +219,16 @@
                 property_type: data.property_type,
                 state_of_interest: data.state_of_interest,
                 city_of_interest: data.city_of_interest,
-                top_neighborhoods: data.top_neighborhoods || [],
-                investment_amount: parseFloat(data.investment_amount.replace(/[^\d.-]/g, '')),
-                payment_methods: data.payment_methods || []
+                top_neighborhoods: data.top_neighborhoods.join(', '), // Convert array to string
+                investment_amount: data.investment_amount,
+                payment_methods: data.payment_methods.join(', ') // Convert array to string
             };
 
-            const API_URL = 'https://b0eivhfz0i.execute-api.us-east-2.amazonaws.com/prod/trigger';
-
-            // Make API call
-            fetch(API_URL, { // Replace with your API URL
+            // Send the formatted data to the server
+            fetch('https://example.com/submit', { // Replace with your server URL
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'User-Agent': 'insomnia/10.0.0'
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(formattedData)
             })

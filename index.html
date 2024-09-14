@@ -113,6 +113,22 @@
                 <input type="date" id="birth_date" name="birth_date" required>
             </div>
             <div class="form-group">
+                <label for="rg">RG:</label>
+                <input type="text" id="rg" name="rg">
+            </div>
+            <div class="form-group">
+                <label for="cpf">CPF:</label>
+                <input type="text" id="cpf" name="cpf">
+            </div>
+            <div class="form-group">
+                <label for="profession">Profissão:</label>
+                <input type="text" id="profession" name="profession">
+            </div>
+            <div class="form-group">
+                <label for="address">Endereço:</label>
+                <input type="text" id="address" name="address">
+            </div>
+            <div class="form-group">
                 <label for="phone_number">Celular:</label>
                 <input type="tel" id="phone_number" name="phone_number" placeholder="(00) 00000-0000" required>
             </div>
@@ -183,6 +199,10 @@
                 full_name: data.full_name,
                 email_address: data.email_address,
                 birth_date: data.birth_date,
+                rg: data.rg,
+                cpf: data.cpf,
+                profession: data.profession,
+                address: data.address,
                 phone_number: data.phone_number,
                 property_type: data.property_type,
                 state_of_interest: data.state_of_interest,
@@ -201,17 +221,16 @@
                     'Content-Type': 'application/json',
                     'User-Agent': 'insomnia/10.0.0'
                 },
-                body: JSON.stringify(formattedData),
+                body: JSON.stringify(formattedData)
             })
             .then(response => response.json())
-            .then(result => {
+            .then(data => {
+                console.log('Success:', data);
                 alert('Formulário enviado com sucesso!');
-                // Optional: Redirect or reset the form
-                this.reset();
             })
-            .catch(error => {
-                console.error('Erro ao enviar o formulário:', error);
-                alert('Houve um erro ao enviar o formulário.');
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Erro ao enviar o formulário.');
             });
         });
     </script>

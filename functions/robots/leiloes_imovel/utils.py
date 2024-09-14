@@ -64,21 +64,6 @@ def find_property_types(inputs: list) -> list:
 
     return results
 
-
-def xpath(element, xpath):
-    elements = element.xpath(xpath)
-    if not elements:
-        return None
-    return elements[0].strip()
-
-
-def xpath_list(element, xpath):
-    elements = element.xpath(xpath)
-    if not elements:
-        return []
-    return elements
-
-
 def get_lists():
 
     url = f"https://api.trello.com/1/boards/{BOARD_ID}/lists"

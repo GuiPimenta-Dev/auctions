@@ -28,16 +28,11 @@ def lambda_handler(event, context):
 
     sns_client = boto3.client("sns")
 
-    body = json.loads(event["body"])
-
     TOPIC_ARN = os.environ["TOPIC_ARN"]
-    response = sns_client.publish(
-        TopicArn=topic_arn,
-        Message=body,
-    )
+    response = sns_client.publish(TopicArn=TOPIC_ARN, Message=event["body"])
 
     return {
         "statusCode": 200,
-        "body": json.dumps({"message": "Hello World!"}),
+        "body": json.dumps({"message": "success!"}),
         "headers": {"Access-Control-Allow-Origin": "*"},
     }

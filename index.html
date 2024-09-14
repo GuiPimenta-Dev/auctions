@@ -168,27 +168,50 @@
             const formData = new FormData(this);
             const data = {};
             formData.forEach((value, key) => {
-                data[key] = value;
+                // Handling arrays for multiple selections
+                if (key === "top_neighborhoods") {
+                    data[key] = value.split(',').map(item => item.trim());
+                } else if (key === "payment_methods") {
+                    data[key] = value.split(',').map(item => item.trim());
+                } else {
+                    data[key] = value;
+                }
             });
-            
-            console.log(data);
+
+            // Convert the data object to match the expected format
+            const formattedData = {
+                full_name: data.full_name,
+                email_address: data.email_address,
+                birth_date: data.birth_date,
+                phone_number: data.phone_number,
+                property_type: data.property_type,
+                state_of_interest: data.state_of_interest,
+                city_of_interest: data.city_of_interest,
+                top_neighborhoods: data.top_neighborhoods || [],
+                investment_amount: parseFloat(data.investment_amount.replace(/[^\d.-]/g, '')),
+                payment_methods: data.payment_methods || []
+            };
+
+            const API_URL = 'https://b0eivhfz0i.execute-api.us-east-2.amazonaws.com/prod/trigger';
+
             // Make API call
-            fetch('https://api.example.com/submit', { // Replace with your API URL
+            fetch(API_URL, { // Replace with your API URL
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'User-Agent': 'insomnia/10.0.0'
                 },
-                body: JSON.stringify(data),
+                body: JSON.stringify(formattedData),
             })
             .then(response => response.json())
             .then(result => {
-                alert('Form successfully submitted!');
+                alert('Formulário enviado com sucesso!');
                 // Optional: Redirect or reset the form
                 this.reset();
             })
             .catch(error => {
-                console.error('Error submitting the form:', error);
-                alert('There was an error submitting the form.');
+                console.error('Erro ao enviar o formulário:', error);
+                alert('Houve um erro ao enviar o formulário.');
             });
         });
     </script>

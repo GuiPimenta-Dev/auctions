@@ -8,7 +8,7 @@ class TriggerConfig:
             name="Trigger",
             path="./functions/trigger",
             description="Trigger the robots",
-            environment={"TOPIC": services.sns.auctions_topic.topic_arn},
+            environment={"TOPIC_ARN": services.sns.auctions_topic.topic_arn},
         )
 
         services.api_gateway.create_endpoint("POST", "/trigger", function, public=True)

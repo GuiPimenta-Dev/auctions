@@ -12,10 +12,10 @@ def lambda_handler(event, context):
     message = json.loads(record["Sns"]["Message"])
 
     property_type = message["property_information"].get("property_type")
-    state_of_interest = message["property_information"].get("state_of_interest")
-    city_of_interest = message["property_information"].get("city_of_interest")
-    top_neighborhoods = message["property_information"].get("top_neighborhoods")
-    investment_amount = message["property_information"].get("investment_amount")
+    state_of_interest = message["property_information"].get("property_state")
+    city_of_interest = message["property_information"].get("property_city")
+    top_neighborhoods = message["property_information"].get("property_neighborhood")
+    investment_amount = message["property_information"].get("budget")
     payment_methods = message["property_information"].get("payment_methods")
 
     personal_information = message["personal_information"]
@@ -64,12 +64,18 @@ def lambda_handler(event, context):
             card_title = f"""
 Informações do Cliente:
 Cliente: {personal_information['full_name']}
-RG: {personal_information['rg']}
-CPF: {personal_information['cpf']}
+CPF/CNPJ: {personal_information['cpf_cnpj']}
 Telefone: {personal_information['phone_number']}
 Email: {personal_information['email_address']}
 Profissão: {personal_information['profession']}
 Endereço: {personal_information['address']}
+Cidade: {personal_information['city']}
+Estado: {personal_information['state']}
+País: {personal_information['country']}
+Finalidade do imóvel: {personal_information['property_purpose']}
+Experiência com leilões: {personal_information['experience']}
+Duvídas: {personal_information['auction_question']}
+
 
 Informações do Imóvel Desejado:
 Tipo de imóvel: {property_type}

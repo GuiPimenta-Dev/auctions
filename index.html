@@ -1,151 +1,169 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário de Interesse Imobiliário</title>
+    <title>Formulário de Interesse</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
         }
 
-        .form-container {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 800px;
-            box-sizing: border-box;
-            overflow: hidden;
-        }
-
-        .form-container h2 {
+        h1 {
             text-align: center;
-            margin-bottom: 20px;
+            padding: 20px;
             color: #333;
         }
 
-        .form-group {
-            margin-bottom: 15px;
-            display: flex;
-            flex-direction: column;
+        form {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .form-group label {
-            margin-bottom: 5px;
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
             font-weight: bold;
+            margin-bottom: 5px;
             color: #555;
         }
 
-        .form-group input[type="text"],
-        .form-group input[type="email"],
-        .form-group input[type="date"],
-        .form-group input[type="tel"],
-        .form-group textarea {
+        input[type="text"],
+        input[type="email"],
+        textarea {
             width: 100%;
-            max-width: 100%;
             padding: 10px;
-            border: 1px solid #ddd;
+            font-size: 16px;
+            border: 1px solid #ccc;
             border-radius: 4px;
             box-sizing: border-box;
         }
 
-        .form-group textarea {
-            resize: vertical;
-        }
-
-        .form-group button {
-            width: 100%;
-            padding: 12px;
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 4px;
-            margin-top: 10px;
-        }
-
-        .form-group button:hover {
-            background-color: #45a049;
-        }
-
-        .radio-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .radio-group label {
-            display: flex;
-            align-items: center;
-            margin-bottom: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            padding-left: 5px;
-        }
-
-        .radio-group input {
+        input[type="radio"] {
             margin-right: 10px;
         }
 
-        @media (max-width: 600px) {
-            .form-group input[type="text"],
-            .form-group input[type="email"],
-            .form-group input[type="date"],
-            .form-group input[type="tel"],
-            .form-group textarea {
-                width: calc(100% - 20px); /* Adjust width for small screens */
-            }
+        .radio-group label {
+            margin-right: 20px;
+            font-weight: normal;
+            color: #333;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        .form-group .radio-group {
+            margin-left: 20px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .form-group small {
+            color: #777;
+        }
+
+        .container {
+            padding: 40px 20px;
         }
     </style>
 </head>
 <body>
-    <div class="form-container">
-        <h2>Formulário de Interesse Imobiliário</h2>
+
+    <div class="container">
+        <h1>Formulário de Interesse</h1>
         <form id="interest_form">
             <div class="form-group">
                 <label for="full_name">Nome completo:</label>
                 <input type="text" id="full_name" name="full_name" required>
             </div>
+
             <div class="form-group">
-                <label for="email_address">Endereço de e-mail:</label>
-                <input type="email" id="email_address" name="email_address" required>
+                <label for="cpf_cnpj">CPF/CNPJ:</label>
+                <input type="text" id="cpf_cnpj" name="cpf_cnpj" required>
             </div>
+
             <div class="form-group">
-                <label for="birth_date">Data de Nascimento:</label>
-                <input type="date" id="birth_date" name="birth_date" required>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
             </div>
+
             <div class="form-group">
-                <label for="rg">RG:</label>
-                <input type="text" id="rg" name="rg">
+                <label for="cell_number">Número celular:</label>
+                <input type="text" id="cell_number" name="cell_number" required>
             </div>
-            <div class="form-group">
-                <label for="cpf">CPF:</label>
-                <input type="text" id="cpf" name="cpf">
-            </div>
-            <div class="form-group">
-                <label for="profession">Profissão:</label>
-                <input type="text" id="profession" name="profession">
-            </div>
+
             <div class="form-group">
                 <label for="address">Endereço:</label>
-                <input type="text" id="address" name="address">
+                <input type="text" id="address" name="address" required>
             </div>
+
             <div class="form-group">
-                <label for="phone_number">Celular:</label>
-                <input type="tel" id="phone_number" name="phone_number" placeholder="(00) 00000-0000" required>
+                <label for="city">Cidade:</label>
+                <input type="text" id="city" name="city" required>
             </div>
+
             <div class="form-group">
-                <label>Tipo de imóvel para rastreio:</label>
+                <label for="state">Estado:</label>
+                <input type="text" id="state" name="state" required>
+            </div>
+
+            <div class="form-group">
+                <label for="country">País:</label>
+                <input type="text" id="country" name="country" required>
+            </div>
+
+            <div class="form-group">
+                <label for="profession">Profissão:</label>
+                <input type="text" id="profession" name="profession" required>
+            </div>
+
+            <div class="form-group">
+                <label for="budget">Pretensão de valor de orçamento destinado ao investimento:</label>
+                <input type="text" id="budget" name="budget" required>
+            </div>
+
+            <div class="form-group">
+                <label for="state">Estado de interesse:</label>
+                <input type="text" id="property_state" name="property_state" required>
+            </div>
+
+            <div class="form-group">
+                <label for="state">Cidade de interesse:</label>
+                <input type="text" id="property_city" name="property_city" required>
+            </div>
+
+            <div class="form-group">
+                <label for="state">5 Bairros de interesse:</label>
+                <input type="text" id="property_neighborhood" name="property_neighborhood" required>
+            </div>
+
+            <div class="form-group">
+                <label>Tipo de imóvel de interesse:</label>
                 <div class="radio-group">
                     <label><input type="radio" name="property_type" value="Casa" required> Casa</label>
                     <label><input type="radio" name="property_type" value="Apartamento"> Apartamento</label>
@@ -155,26 +173,29 @@
                     <label><input type="radio" name="property_type" value="Terreno rural"> Terreno rural</label>
                 </div>
             </div>
+
             <div class="form-group">
-                <label for="state_of_interest">Estado de interesse para busca:</label>
-                <input type="text" id="state_of_interest" name="state_of_interest" placeholder="Paraná">
+                <label>Finalidade do imóvel:</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="property_purpose" value="Investimento" required> Investimento</label>
+                    <label><input type="radio" name="property_purpose" value="Moradia"> Moradia</label>
+                </div>
             </div>
+
             <div class="form-group">
-                <label for="city_of_interest">Cidade de interesse para busca:</label>
-                <input type="text" id="city_of_interest" name="city_of_interest" placeholder="Curitiba">
+                <label>Possui experiência em leilões anteriores?</label>
+                <input type="text" id="auction_experience" name="auction_experience">
             </div>
+
             <div class="form-group">
-                <label for="top_neighborhoods">Quais os 5 principais bairros de sua pretensão?</label>
-                <input type="text" id="top_neighborhoods" name="top_neighborhoods" placeholder="Centro, Batel, Água Verde, Santa Felicidade, Juvevê">
+                <label for="auction_question">Qual sua principal dúvida sobre leilões?</label>
+                <textarea id="auction_question" name="auction_question" rows="4" ></textarea>
             </div>
-            <div class="form-group">
-                <label for="investment_amount">Valor disponível para investimento:</label>
-                <input type="text" id="investment_amount" name="investment_amount" placeholder="R$ 1000.000">
-            </div>
+
             <div class="form-group">
                 <label>Formas de pagamento relevantes:</label>
                 <div class="radio-group">
-                    <label><input type="radio" name="payment_methods" value="À vista" required> À vista</label>
+                    <label><input type="radio" name="payment_methods" value="À vista"> À vista</label>
                     <label><input type="radio" name="payment_methods" value="Entrada + financiamento"> Entrada + financiamento</label>
                     <label><input type="radio" name="payment_methods" value="Entrada + parcelamento sem juros"> Entrada + parcelamento sem juros</label>
                     <label><input type="radio" name="payment_methods" value="100% Financiamento"> 100% Financiamento</label>
@@ -182,6 +203,7 @@
                     <label><input type="radio" name="payment_methods" value="FGTS + financiamento"> FGTS + financiamento</label>
                 </div>
             </div>
+
             <div class="form-group">
                 <button type="submit">Enviar</button>
             </div>
@@ -196,34 +218,31 @@
             const formData = new FormData(this);
             const data = {};
             formData.forEach((value, key) => {
-                // Handling arrays for multiple selections
-                if (key === "top_neighborhoods") {
-                    data[key] = value.split(',').map(item => item.trim());
-                } else if (key === "payment_methods") {
-                    data[key] = value.split(',').map(item => item.trim());
-                } else {
-                    data[key] = value;
-                }
+                data[key] = value;
             });
 
-            // Convert the data object to match the expected format
+            // Format the data as needed for the API
             const formattedData = {
                 personal_information: {
                     full_name: data.full_name,
-                    email_address: data.email_address,
-                    birth_date: data.birth_date,
-                    rg: data.rg,
-                    cpf: data.cpf,
-                    profession: data.profession,
+                    cpf_cnpj: data.cpf_cnpj,
+                    email: data.email,
+                    phone_number: data.cell_number,
                     address: data.address,
-                    phone_number: data.phone_number
+                    city: data.city,
+                    state: data.state,
+                    country: data.country,
+                    profession: data.profession,
+                    auction_experience: data.auction_experience,
+                    auction_question: data.auction_question,
+                    property_purpose: data.property_purpose,
                 },
                 property_information: {
+                    budget: data.budget,
                     property_type: data.property_type,
-                    state_of_interest: data.state_of_interest,
-                    city_of_interest: data.city_of_interest,
-                    top_neighborhoods: data.top_neighborhoods.join(', '),
-                    investment_amount: data.investment_amount,
+                    property_state: data.property_state,
+                    property_city: data.property_city,
+                    property_neighborhood: data.property_neighborhood.join(', '),
                     payment_methods: data.payment_methods.join(', ')
                 }
             };
@@ -247,5 +266,6 @@
             });
         });
     </script>
+
 </body>
 </html>

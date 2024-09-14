@@ -1,5 +1,3 @@
-from openpyxl import Workbook
-
 from fuzzywuzzy import process
 import re
 import requests
@@ -63,19 +61,6 @@ def find_property_types(inputs: list) -> list:
         results.append(str(type_id))
 
     return results
-
-
-def save_to_excel(results, filename="output.xlsx"):
-    wb = Workbook()
-    ws = wb.active
-
-    headers = results[0].keys()
-    ws.append(list(headers))
-
-    for entry in results:
-        ws.append(list(entry.values()))
-
-    wb.save(filename)
 
 
 def xpath(element, xpath):

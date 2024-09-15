@@ -5,10 +5,10 @@ from lambda_forge.path import Path
 class Layers:
     def __init__(self, scope) -> None:
 
-        self.get_location_layer = _lambda.LayerVersion(
+        self.string_utils = _lambda.LayerVersion(
             scope,
-            id="GetLocationLayer",
-            code=_lambda.Code.from_asset(Path.layer("layers/get_location")),
+            id="StringUtilsLayer",
+            code=_lambda.Code.from_asset(Path.layer("layers/string_utils")),
             compatible_runtimes=[_lambda.Runtime.PYTHON_3_9],
             description="",
         )
@@ -19,10 +19,10 @@ class Layers:
             layer_version_arn="arn:aws:lambda:us-east-2:211125768252:layer:robots:1",
         )
 
-        self.sm_utils_layer = _lambda.LayerVersion(
+        self.trello_layer = _lambda.LayerVersion(
             scope,
-            id="SmUtilsLayer",
-            code=_lambda.Code.from_asset(Path.layer("layers/sm_utils")),
+            id="TrelloLayer",
+            code=_lambda.Code.from_asset(Path.layer("layers/trello")),
             compatible_runtimes=[_lambda.Runtime.PYTHON_3_9],
             description="",
         )

@@ -1,8 +1,10 @@
 import json
 
-import get_location
 import requests
+import string_utils
+import trello
 from bs4 import BeautifulSoup
+
 from . import utils
 
 
@@ -20,7 +22,7 @@ def lambda_handler(event, context):
 
     personal_information = message["personal_information"]
 
-    state_of_interest = get_location.find_state(state_of_interest)
+    state_of_interest = string_utils.find_state_based_on_state_of_interest(state_of_interest)
     all_cities = requests.get("https://www.leilaoimovel.com.br/getAllCities").json()["locations"]
 
     chosen_city = next((city for city in all_cities if city_of_interest in city["name"]), None)
@@ -46,7 +48,6 @@ def lambda_handler(event, context):
         # Pega todos os boxes de imoveis
         boxes = soup.select("div.place-box")
         for box in boxes:
-            # Pega o preço, nome, endereço e url do imovel
             price = utils.css_select(box, 'span.last-price')
             discount = utils.css_select(box, 'span.discount-price.font-1')
             name = utils.css_select(box, "div.address p b")
@@ -60,37 +61,22 @@ def lambda_handler(event, context):
             general_info = utils.get_general_info(soup)
             files = utils.get_files(soup)
 
-            # card_titile should be each key of personal_information : value
-            card_title = f"""
-Informações do Cliente:
-Cliente: {personal_information['full_name']}
-CPF/CNPJ: {personal_information['cpf_cnpj']}
-Telefone: {personal_information['phone_number']}
-Email: {personal_information['email']}
-Profissão: {personal_information['profession']}
-Endereço: {personal_information['address']}
-Cidade: {personal_information['city']}
-Estado: {personal_information['state']}
-País: {personal_information['country']}
-Finalidade do imóvel: {personal_information['property_purpose']}
-Experiência com leilões: {personal_information['auction_experience']}
-Duvídas: {personal_information['auction_question']}
+            property_details = {
+                "price": price,
+                "discount": discount,
+                "name": name,
+                "address": address,
+                "general_info": general_info,
+                "files": files,
+                "url": property_url,
+            }
 
-
-Informações do Imóvel:
-Tipo de imóvel: {property_type}
-Cidade: {city_of_interest}
-Estado: {state_of_interest['state']}
-Bairro: {top_neighborhoods}
-Valor de Investimento: {investment_amount}
-Formas de pagamento: {payment_methods}
-"""
-
-            lists = utils.get_lists()
-            first_list = lists[0]
-
-            card_description = utils.create_card_description(
-                price, discount, name, address, image, property_url, general_info, files
+            card = trello.Card(
+                personal_information=trello.PersonalInformation(**personal_information),
+                property_information=trello.PropertyInformation(**message["property_information"]),
+                property_details=trello.PropertyDetails(**property_details),
+                cover=image,
             )
-            card = utils.create_a_card(first_list["id"], card_title, card_description)
-            utils.set_cover(card["id"], image)
+
+            trello.create_card(card)
+

@@ -32,7 +32,7 @@ states = {
 }
 
 
-def find_state(s: str) -> dict:
+def find_state_based_on_state_of_interest(s: str) -> dict:
     s = re.sub(r"\s+", " ", s.strip()).lower()
 
     normalized_states = {re.sub(r"\s+", " ", k).lower(): v for k, v in states.items()}

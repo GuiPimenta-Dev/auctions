@@ -260,13 +260,13 @@
                     property_type: data.property_type,
                     property_state: data.property_state,
                     property_city: data.property_city,
-                    property_neighborhood: data.property_neighborhood,
-                    payment_methods: data.payment_methods
+                    property_neighborhood: data.property_neighborhood.split(',').map(item => item.trim()),
+                    payment_method: data.payment_methods
                 }
             };
 
             // Send the formatted data to the server
-            fetch('https://b0eivhfz0i.execute-api.us-east-2.amazonaws.com/prod/trigger', { // Replace with your server URL
+            fetch('https://b0eivhfz0i.execute-api.us-east-2.amazonaws.com/prod/trigger', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

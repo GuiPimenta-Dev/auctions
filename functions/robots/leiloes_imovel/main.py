@@ -1,12 +1,11 @@
 import json
-from pprint import pprint
 
 import requests
 import string_utils
 import trello
 from bs4 import BeautifulSoup
-
 from . import utils
+from pprint import pprint
 
 
 def lambda_handler(event, context):
@@ -30,7 +29,7 @@ def lambda_handler(event, context):
     if not chosen_city:
         print(f"City {city_of_interest} not found in the list of cities.")
         return
-
+        
     types = utils.find_property_types(property_type.split(","))
     url = f"https://www.leilaoimovel.com.br/encontre-seu-imovel?s=&cidade={chosen_city['id']}&tipo={','.join(types)}&preco_min={investment_amount}"
     response = requests.get(url)
@@ -77,4 +76,3 @@ def lambda_handler(event, context):
             )
 
             trello.create_card(card)
-

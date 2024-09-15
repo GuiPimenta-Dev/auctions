@@ -71,6 +71,8 @@ def lambda_handler(event, context):
             }
 
             card = trello.Card(
+                personal_information=trello.PersonalInformation(**personal_information),
+                property_information=trello.PropertyInformation(**message["property_information"]),
                 property_details=trello.PropertyDetails(**property_details),
                 cover=image,
             )

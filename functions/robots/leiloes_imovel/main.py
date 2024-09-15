@@ -20,8 +20,6 @@ def lambda_handler(event, context):
     investment_amount = message["property_information"].get("budget")
     payment_methods = message["property_information"].get("payment_methods")
 
-    personal_information = message["personal_information"]
-
     state_of_interest = string_utils.find_state_based_on_state_of_interest(state_of_interest)
     all_cities = requests.get("https://www.leilaoimovel.com.br/getAllCities").json()["locations"]
 
@@ -31,21 +29,17 @@ def lambda_handler(event, context):
     url = f"https://www.leilaoimovel.com.br/encontre-seu-imovel?s=&cidade={chosen_city['id']}&tipo={','.join(types)}&preco_min={investment_amount}"
     response = requests.get(url)
 
-    # Faz o parse do html para podermos pegar os dados
     soup = BeautifulSoup(response.text, "html.parser")
 
-    # Pega o numero de paginas que temos que percorrer
     total_results = int(soup.select_one("span.count-places").get_text().strip().split("Imóveis")[0])
     number_of_pages = (total_results // 20) + 1
 
     for page in range(1, number_of_pages + 1):
-        # Faz a request para a pagina de busca
         url = f"https://www.leilaoimovel.com.br/encontre-seu-imovel?s=&cidade={chosen_city['id']}&pag={page}&tipo={','.join(types)}&preco_min={investment_amount}"
         response = requests.get(url)
 
         soup = BeautifulSoup(response.text, "html.parser")
 
-        # Pega todos os boxes de imoveis
         boxes = soup.select("div.place-box")
         for box in boxes:
             price = utils.css_select(box, 'span.last-price')
@@ -72,8 +66,6 @@ def lambda_handler(event, context):
             }
 
             card = trello.Card(
-                personal_information=trello.PersonalInformation(**personal_information),
-                property_information=trello.PropertyInformation(**message["property_information"]),
                 property_details=trello.PropertyDetails(**property_details),
                 cover=image,
             )

@@ -165,6 +165,7 @@ def create_description(card: Card):
 
 
 def format_money(amount):
+    amount = float(amount)
     formatted_amount = (
         f"R$ {amount:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
     )

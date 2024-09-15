@@ -1,4 +1,5 @@
 import json
+from pprint import pprint
 
 import requests
 import string_utils
@@ -13,6 +14,8 @@ def lambda_handler(event, context):
     record = event["Records"][0]
     message = json.loads(record["Sns"]["Message"])
 
+    pprint(message)
+
     property_type = message["property_information"].get("property_type")
     state_of_interest = message["property_information"].get("property_state")
     city_of_interest = message["property_information"].get("property_city")
@@ -24,6 +27,9 @@ def lambda_handler(event, context):
     all_cities = requests.get("https://www.leilaoimovel.com.br/getAllCities").json()["locations"]
 
     chosen_city = next((city for city in all_cities if city_of_interest in city["name"]), None)
+    if not chosen_city:
+        print(f"City {city_of_interest} not found in the list of cities.")
+        return
 
     types = utils.find_property_types(property_type.split(","))
     url = f"https://www.leilaoimovel.com.br/encontre-seu-imovel?s=&cidade={chosen_city['id']}&tipo={','.join(types)}&preco_min={investment_amount}"

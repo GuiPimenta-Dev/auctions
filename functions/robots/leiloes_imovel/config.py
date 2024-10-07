@@ -12,3 +12,9 @@ class LeiloesImovelConfig:
         )
 
         services.sns.create_trigger("auctions_topic", function)
+
+        services.event_bridge.schedule(
+            expression="rate(1 day)",
+            rule_name="auctions",
+            function=function,
+        )

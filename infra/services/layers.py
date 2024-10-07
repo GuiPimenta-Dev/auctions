@@ -26,3 +26,11 @@ class Layers:
             compatible_runtimes=[_lambda.Runtime.PYTHON_3_9],
             description="",
         )
+
+        self.clickup_layer = _lambda.LayerVersion(
+            scope,
+            id='ClickupLayer',
+            code=_lambda.Code.from_asset(Path.layer('layers/clickup')),
+            compatible_runtimes=[_lambda.Runtime.PYTHON_3_9],
+            description='',
+         )

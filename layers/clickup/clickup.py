@@ -2,12 +2,14 @@ import json
 import os
 from dataclasses import dataclass
 
+from auction.auction import Auction
 import boto3
 import requests
 from dotenv import load_dotenv
 
 load_dotenv()
 LIST_ID = "901105021286"  # ClickUp List ID
+
 
 @dataclass
 class PersonalInformation:
@@ -48,22 +50,10 @@ class GeneralInfo:
 
 
 @dataclass
-class PropertyDetails:
-    name: str
-    address: str
-    price: float
-    discount: float
-    url: str
-    general_info: GeneralInfo
-    files: Files
-
-
-@dataclass
 class Task:
     personal_information: PersonalInformation
     property_information: PropertyInformation
-    property_details: PropertyDetails
-    cover: str
+    auction: Auction
 
 
 def create_task(task: Task):
@@ -77,10 +67,7 @@ def create_task(task: Task):
     title = create_title(task)
     description = create_description(task)
 
-    headers = {
-        "Authorization": API_TOKEN,
-        "Content-Type": "application/json"
-    }
+    headers = {"Authorization": API_TOKEN, "Content-Type": "application/json"}
 
     payload = {
         "name": title,
@@ -98,7 +85,7 @@ def create_task(task: Task):
     }
 
     response = requests.post(url, headers=headers, json=payload)
-    
+
     if response.status_code == 200:
         task_id = response.json().get("id")
     else:
@@ -139,42 +126,42 @@ Método de Pagamento: {task.property_information.payment_method}
 """
 
     # Seção de Informações Gerais
-    general_info_text = "\n".join(
-        f"{item['title']}: {item['text']}"
-        for item in task.property_details.general_info
-    ) if task.property_details.general_info else "Informações Gerais: Nenhum detalhe disponível."
+    general_info_text = (
+        "\n".join(
+            f"{item['title']}: {item['text']}" for item in task.auction.general_info
+        )
+        if task.auction.general_info
+        else "Informações Gerais: Nenhum detalhe disponível."
+    )
 
     # Seção de Arquivos
-    files_text = "\n".join(
-        f"{item['title']}: {item['link']}" for item in task.property_details.files
-    ) if task.property_details.files else "Arquivos Relacionados: Nenhum arquivo disponível."
+    files_text = (
+        "\n".join(f"{item['title']}: {item['link']}" for item in task.auction.files)
+        if task.auction.files
+        else "Arquivos Relacionados: Nenhum arquivo disponível."
+    )
 
     # Seção de Detalhes da Propriedade Encontrada
-    property_details_section = f"""
+    auction_section = f"""
 Detalhes da Propriedade Encontrada:
 
-Nome da Propriedade: {task.property_details.name}
-Endereço: {task.property_details.address}
-Preço: {task.property_details.price}
+Nome da Propriedade: {task.auction.name}
+Endereço: {task.auction.address}
+Preço: {task.auction.discount_value}
 {general_info_text}
 
 Arquivos Relacionados:
 {files_text}
 
 Link da Propriedade:
-{task.property_details.url}
+{task.auction.url}
 
 """
 
     # Combina todas as seções em uma única descrição
-    full_description = (
-        personal_info_section +
-        property_info_section +
-        property_details_section
-    )
+    full_description = personal_info_section + property_info_section + auction_section
 
     return full_description
-
 
 
 def format_money(amount):
@@ -184,5 +171,6 @@ def format_money(amount):
     )
     return formatted_amount
 
+
 def create_title(task: Task):
-    return f"{task.personal_information.full_name} - {task.property_details.name}"
+    return f"{task.personal_information.full_name} - {task.auction.name}"

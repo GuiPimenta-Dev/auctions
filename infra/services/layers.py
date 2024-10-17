@@ -29,8 +29,16 @@ class Layers:
 
         self.clickup_layer = _lambda.LayerVersion(
             scope,
-            id='ClickupLayer',
-            code=_lambda.Code.from_asset(Path.layer('layers/clickup')),
+            id="ClickupLayer",
+            code=_lambda.Code.from_asset(Path.layer("layers/clickup")),
             compatible_runtimes=[_lambda.Runtime.PYTHON_3_9],
-            description='',
-         )
+            description="",
+        )
+
+        self.auction_layer = _lambda.LayerVersion(
+            scope,
+            id="AuctionLayer",
+            code=_lambda.Code.from_asset(Path.layer("layers/auction")),
+            compatible_runtimes=[_lambda.Runtime.PYTHON_3_9],
+            description="",
+        )

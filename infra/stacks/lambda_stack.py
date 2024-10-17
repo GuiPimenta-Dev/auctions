@@ -1,3 +1,4 @@
+from functions.mailer.config import MailerConfig
 from functions.customers.config import CustomersConfig
 from aws_cdk import Stack
 from constructs import Construct
@@ -22,3 +23,6 @@ class LambdaStack(Stack):
 
         # Customers
         CustomersConfig(self.services)
+
+        # Mailer
+        MailerConfig(self.services)

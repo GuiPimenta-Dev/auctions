@@ -4,50 +4,7 @@
         "path": "./functions/robots/leiloes_imovel",
         "description": "A scraper",
         "timeout": 60,
-        "triggers": [
-            {
-                "service": "sns",
-                "trigger": "auctions_topic"
-            }
-        ],
-        "invocations": [
-            {
-                "service": "sqs",
-                "resource": "results_queue"
-            }
-        ]
-    },
-    {
-        "name": "Trigger",
-        "path": "./functions/trigger",
-        "description": "Trigger the robots",
-        "timeout": 60,
-        "triggers": [
-            {
-                "service": "api_gateway",
-                "trigger": "/trigger",
-                "method": "POST",
-                "public": true
-            }
-        ],
-        "invocations": [
-            {
-                "service": "sns",
-                "resource": "auctions_topic"
-            }
-        ]
-    },
-    {
-        "name": "Pipeline",
-        "path": "./functions/pipeline",
-        "description": "Pipeline for processing auction data",
-        "timeout": 60,
-        "triggers": [
-            {
-                "service": "sqs",
-                "trigger": "results_queue"
-            }
-        ],
+        "triggers": [],
         "invocations": []
     }
 ]

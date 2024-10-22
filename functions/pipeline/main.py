@@ -1,16 +1,24 @@
+import boto3
 import datetime
 import json
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-import os
-# Authenticate with Google service account
-scopes = [
-    "https://spreadsheets.google.com/feeds",
-    "https://www.googleapis.com/auth/drive",
-]
-current_dir = os.path.dirname(os.path.realpath(__file__))
-filename = f'{current_dir}/keys.json'
-creds = ServiceAccountCredentials.from_json_keyfile_name(filename=filename, scopes=scopes)
+import ast
+
+# Initialize AWS Secrets Manager
+secrets_manager = boto3.client('secretsmanager')
+
+# Fetch Google credentials from Secrets Manager
+def get_google_credentials(secret_name):
+    response = secrets_manager.get_secret_value(SecretId=secret_name)
+    secret_string = response['SecretString']
+    return json.loads(secret_string)  # Assuming the secret is stored as a JSON string
+
+# Authenticate with Google service account using credentials from Secrets Manager
+secret_name = 'GoogleSheets'  # Replace with your secret name in Secrets Manager
+google_creds = get_google_credentials(secret_name)
+creds = ServiceAccountCredentials.from_json_keyfile_dict(google_creds)
+
 client = gspread.authorize(creds)
 
 # Access the spreadsheet by name and folder ID
@@ -18,6 +26,7 @@ spreadsheet_name = "Imóveis"
 folder_id = ''  # Folder ID on Google Drive (if necessary)
 worksheet = client.open(title=spreadsheet_name, folder_id=folder_id).get_worksheet(0)
 
+# Spreadsheet columns for reference (including the "Atualizado em" column)
 columns = [
     "Estado (sigla)", "Cidade", "Bairro", "Endereço",
     "Data do Leilão 1a Hasta", "Data do Leilão 2a Hasta", "Valor de Avaliação", "Lance Inicial",
@@ -54,14 +63,13 @@ def update_spreadsheet(item, current_date):
     personal_info = item["personal_info"]
     url = auction.get("url")
 
-    existing_row_index = next(
-        (
-            idx + 2
-            for idx, record in enumerate(sheet_data)
-            if record.get("Site") == url
-        ),
-        None,
-    )
+    # Check if URL already exists in the sheet
+    existing_row_index = None
+    for idx, record in enumerate(sheet_data):
+        if record.get("Site") == url:
+            existing_row_index = idx + 2  # Adjust index for row number in the sheet
+            break
+
     # Prepare the data dictionary mapped to column keys
     data = {
         "Estado (sigla)": auction.get("state"),

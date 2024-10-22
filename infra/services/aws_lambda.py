@@ -28,8 +28,7 @@ class Lambda:
 
         layers = layers + [
             self.layers.string_utils,
-            self.layers.robots_layer,
-            self.layers.trello_layer,
+            self.layers.robots_layer
         ]
 
         function = Function(

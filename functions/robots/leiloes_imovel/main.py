@@ -1,22 +1,25 @@
 import json
+import os
 import requests
 import string_utils
 import clickup
 from bs4 import BeautifulSoup
 import utils
-import boto3  
+import boto3
 from pprint import pprint
 import uuid
 import datetime
 
-dynamodb = boto3.resource('dynamodb')
-clients_table_name = 'Clientes'  
-clients_table = dynamodb.Table(clients_table_name)
-
-properties_table_name = 'Properties'  
-property_table = dynamodb.Table(properties_table_name)
+# Initialize AWS SQS client
+sqs = boto3.client('sqs')
 
 def lambda_handler(event, context):
+
+    SQS_QUEUE_URL = os.environ.get('SQS_QUEUE_URL')
+
+    # DynamoDB setup to get client data
+    dynamodb = boto3.resource('dynamodb')
+    clients_table = dynamodb.Table('Clientes')
 
     response = clients_table.scan()
     items = response.get('Items', [])
@@ -30,20 +33,23 @@ def lambda_handler(event, context):
         city_of_interest = property_info.get("property_city")
         investment_amount = property_info.get("budget")
 
+        # Convert state_of_interest to full state name
         state_of_interest = string_utils.find_state_based_on_state_of_interest(state_of_interest)
         all_cities = requests.get("https://www.leilaoimovel.com.br/getAllCities").json()["locations"]
 
         chosen_city = next((city for city in all_cities if city_of_interest in city["name"]), None)
         if not chosen_city:
             print(f"City {city_of_interest} not found in the list of cities.")
-            return
+            continue  # Skip to the next client
 
+        # Find types of property
         types = utils.find_property_types(property_type.split(","))
         url = f"https://www.leilaoimovel.com.br/encontre-seu-imovel?s=&cidade={chosen_city['id']}&tipo={','.join(types)}&preco_min={investment_amount}"
         response = requests.get(url)
 
         soup = BeautifulSoup(response.text, "html.parser")
 
+        # Total results and pagination
         total_results = int(soup.select_one("span.count-places").get_text().strip().split("Imóveis")[0])
         number_of_pages = (total_results // 20) + 1
 
@@ -56,25 +62,28 @@ def lambda_handler(event, context):
             boxes = soup.select("div.place-box")
             for box in boxes:
                 auction = utils.get_auction(box, chosen_city["state"])
-                current_date = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d')
-                unique_id = str(uuid.uuid4())
 
-                property_table.put_item(
-                    Item={
-                        'PK': current_date,  
-                        'SK': unique_id,  
-                        'property_info': property_info,
-                        "personal_info": personal_info,
-                        "auction": utils.dataclass_to_dict(auction),
-                    }
+                # Prepare the data to send to SQS
+                auction_data = {
+                    'property_info': property_info,
+                    "personal_info": personal_info,
+                    "auction": utils.dataclass_to_dict(auction),
+                }
+
+                # Send the auction data to the SQS queue
+                response = sqs.send_message(
+                    QueueUrl=SQS_QUEUE_URL,
+                    MessageBody=json.dumps(auction_data)
                 )
 
+                # # Optional: Create a task in ClickUp (same as before)
+                # card = clickup.Task(
+                #     personal_information=clickup.PersonalInformation(**personal_info),
+                #     property_information=clickup.PropertyInformation(**property_info),
+                #     auction=auction,
+                # )
+                # clickup.create_task(card)
 
-                card = clickup.Task(
-                    personal_information=clickup.PersonalInformation(**personal_info),
-                    property_information=clickup.PropertyInformation(**property_info),
-                    auction=auction,
-                )
-
-                clickup.create_task(card)
-lambda_handler({}, {})
+# Test locally (optional)
+if __name__ == "__main__":
+    lambda_handler({}, {})

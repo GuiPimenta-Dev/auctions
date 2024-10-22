@@ -9,12 +9,16 @@ class LeiloesImovelConfig:
             path="./functions/robots",
             description="A scraper",
             directory="leiloes_imovel",
+            environment={
+                "SQS_QUEUE_URL": services.sqs.results_queue.queue_url,
+            }
         )
 
         services.sns.create_trigger("auctions_topic", function)
+        services.sqs.grant_send_messages("results_queue", function)
 
-        services.event_bridge.schedule(
-            expression="rate(1 day)",
-            rule_name="auctions",
-            function=function,
-        )
+        # services.event_bridge.schedule(
+        #     expression="rate(1 day)",
+        #     rule_name="auctions",
+        #     function=function,
+        # )

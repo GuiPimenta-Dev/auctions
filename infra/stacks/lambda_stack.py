@@ -1,5 +1,4 @@
-from functions.mailer.config import MailerConfig
-from functions.customers.config import CustomersConfig
+from functions.pipeline.config import PipelineConfig
 from aws_cdk import Stack
 from constructs import Construct
 
@@ -21,8 +20,6 @@ class LambdaStack(Stack):
         # Trigger
         TriggerConfig(self.services)
 
-        # Customers
-        CustomersConfig(self.services)
+        # Pipeline
+        PipelineConfig(self.services)
 
-        # Mailer
-        MailerConfig(self.services)

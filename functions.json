@@ -10,7 +10,12 @@
                 "trigger": "auctions_topic"
             }
         ],
-        "invocations": []
+        "invocations": [
+            {
+                "service": "sqs",
+                "resource": "results_queue"
+            }
+        ]
     },
     {
         "name": "Trigger",
@@ -31,5 +36,18 @@
                 "resource": "auctions_topic"
             }
         ]
+    },
+    {
+        "name": "Pipeline",
+        "path": "./functions/pipeline",
+        "description": "Pipeline for processing auction data",
+        "timeout": 60,
+        "triggers": [
+            {
+                "service": "sqs",
+                "trigger": "results_queue"
+            }
+        ],
+        "invocations": []
     }
 ]

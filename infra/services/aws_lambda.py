@@ -46,7 +46,5 @@ class Lambda:
             memory_size=memory_size,
         )
 
-        self.sm.trello_secret.grant_read(function)
-
         self.functions[name] = function
         return function

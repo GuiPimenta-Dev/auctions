@@ -24,6 +24,10 @@ PROPERTY_TYPES = {
     "terreno": 3,
 }
 
+def get_all_states():
+    response = requests.get("https://www.leilaoimovel.com.br/getAllStates")
+
+    return response.json()["locations"]
 
 def find_property_types(inputs: list) -> list:
     results = []
@@ -59,6 +63,7 @@ def get_auction(box, state):
     response = requests.get(property_url)
     soup = BeautifulSoup(response.text, "html.parser")
 
+    city = css_select(soup, "nav#breadcrumb li:nth-child(4) span")
     m2 = get_details(soup, "Área Útil")
     bedrooms = get_details(soup, "Quartos")
     parking = get_details(soup, "Vagas")
@@ -66,14 +71,22 @@ def get_auction(box, state):
     discount_value = css_select(soup, "h2.discount-price")
     bids = extract_bid(css_select(soup, "div.bids"))
     general_info = get_general_info(soup)
-    type_ = next(
+    type_modality = next(
         (i["text"] for i in general_info if i["title"] == "Tipo:"), None
     )
+    try:
+        type_ = type_modality.split("/")[0].strip()
+        modality = type_modality.split("/")[-1].strip()
+    except:
+        type_ = None
+        modality = None
     files = get_files(soup)
     auction = Auction(
         name=name,
         type_=type_,
+        modality=modality,
         state=state,
+        city=city,
         address=address,
         appraised_value=appraised_value,
         discount_value=discount_value,
@@ -148,12 +161,3 @@ def get_details(soup, wanted):
             return detail.split(":")[-1].strip()
 
 
-def dataclass_to_dict(obj):
-    if is_dataclass(obj):
-        return {key: dataclass_to_dict(value) for key, value in asdict(obj).items()}
-    elif isinstance(obj, (list, tuple)):
-        return [dataclass_to_dict(item) for item in obj]
-    elif isinstance(obj, dict):
-        return {key: dataclass_to_dict(value) for key, value in obj.items()}
-    else:
-        return obj

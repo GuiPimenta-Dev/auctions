@@ -16,7 +16,9 @@ class Bids:
 class Auction:
     name: str
     type_: str
+    modality: str
     state: str
+    city: str
     address: str
     appraised_value: str
     discount_value: str

@@ -34,3 +34,11 @@ class Layers:
             compatible_runtimes=[_lambda.Runtime.PYTHON_3_9],
             description="",
         )
+
+        self.excel_layer = _lambda.LayerVersion(
+            scope,
+            id='ExcelLayer',
+            code=_lambda.Code.from_asset(Path.layer('layers/excel')),
+            compatible_runtimes=[_lambda.Runtime.PYTHON_3_9],
+            description='',
+         )

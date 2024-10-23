@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Interesse</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        form {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .radio-group label {
+            margin-right: 20px;
+            font-weight: normal;
+            color: #333;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        .form-group .radio-group {
+            margin-left: 20px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .form-group small {
+            color: #777;
+        }
+
+        .container {
+            padding: 40px 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Formulário de Interesse</h1>
+        <form id="interest_form">
+            
+            <!-- Seção: Informações do Cliente -->
+            <div class="section-title">Informações do Cliente</div>
+
+            <div class="form-group">
+                <label for="full_name">Nome completo:</label>
+                <input type="text" id="full_name" name="full_name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="cpf_cnpj">CPF/CNPJ:</label>
+                <input type="text" id="cpf_cnpj" name="cpf_cnpj" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="cell_number">Número celular:</label>
+                <input type="text" id="cell_number" name="cell_number" required>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Endereço:</label>
+                <input type="text" id="address" name="address" required>
+            </div>
+
+            <div class="form-group">
+                <label for="country">País:</label>
+                <input type="text" id="country" name="country" required>
+            </div>
+
+            <div class="form-group">
+                <label for="state">Estado:</label>
+                <input type="text" id="state" name="state" required>
+            </div>
+
+            <div class="form-group">
+                <label for="city">Cidade:</label>
+                <input type="text" id="city" name="city" required>
+            </div>
+
+            <div class="form-group">
+                <label for="profession">Profissão:</label>
+                <input type="text" id="profession" name="profession" required>
+            </div>
+
+            <div class="form-group">
+                <label>Possui experiência em leilões anteriores?</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="auction_experience" value="Sim" required> Sim</label>
+                    <label><input type="radio" name="auction_experience" value="Não"> Não</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="auction_question">Qual sua principal dúvida sobre leilões?</label>
+                <textarea id="auction_question" name="auction_question" rows="4"></textarea>
+            </div>
+
+            <!-- Seção: Informações do Imóvel -->
+            <div class="section-title">Informações do Imóvel</div>
+
+            <div class="form-group">
+                <label for="budget">Valor de orçamento destinado ao investimento:</label>
+                <input type="text" id="budget" name="budget" placeholder="R$ 1000.000">
+            </div>
+
+            <div class="form-group">
+                <label for="property_state">Estado de interesse:</label>
+                <input type="text" id="property_state" name="property_state" placeholder="Paraná" required>
+            </div>
+
+            <div class="form-group">
+                <label for="property_city">Cidade de interesse:</label>
+                <input type="text" id="property_city" name="property_city" placeholder="Curitiba" required>
+            </div>
+
+            <div class="form-group">
+                <label for="property_neighborhood">Bairros de interesse:</label>
+                <input type="text" id="property_neighborhood" name="property_neighborhood"  placeholder="Centro, Batel, Água Verde, Santa Felicidade, Juvevê" required>
+            </div>
+
+            <div class="form-group">
+                <label>Tipo do imóvel:</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="property_type" value="Casa" required> Casa</label>
+                    <label><input type="radio" name="property_type" value="Apartamento"> Apartamento</label>
+                    <label><input type="radio" name="property_type" value="Sala comercial"> Sala comercial</label>
+                    <label><input type="radio" name="property_type" value="Loja comercial"> Loja comercial</label>
+                    <label><input type="radio" name="property_type" value="Terreno urbano"> Terreno urbano</label>
+                    <label><input type="radio" name="property_type" value="Terreno rural"> Terreno rural</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Finalidade do imóvel:</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="property_purpose" value="Investimento" required> Investimento</label>
+                    <label><input type="radio" name="property_purpose" value="Moradia"> Moradia</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Formas de pagamento relevantes:</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="payment_methods" value="À vista" required> À vista</label>
+                    <label><input type="radio" name="payment_methods" value="Entrada + financiamento"> Entrada + financiamento</label>
+                    <label><input type="radio" name="payment_methods" value="Entrada + parcelamento sem juros"> Entrada + parcelamento sem juros</label>
+                    <label><input type="radio" name="payment_methods" value="100% Financiamento"> 100% Financiamento</label>
+                    <label><input type="radio" name="payment_methods" value="Uso de carta de crédito"> Uso de carta de crédito</label>
+                    <label><input type="radio" name="payment_methods" value="FGTS + financiamento"> FGTS + financiamento</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button type="submit">Enviar</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('interest_form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Collect form data
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            // Format the data as needed for the API
+            const formattedData = {
+                personal_information: {
+                    full_name: data.full_name,
+                    cpf_cnpj: data.cpf_cnpj,
+                    email: data.email,
+                    phone_number: data.cell_number,
+                    address: data.address,
+                    city: data.city,
+                    state: data.state,
+                    country: data.country,
+                    profession: data.profession,
+                    auction_experience: data.auction_experience,
+                    auction_question: data.auction_question,
+                    property_purpose: data.property_purpose,
+                },
+                property_information: {
+                    budget: data.budget.replace('R$ ', ''),
+                    property_type: data.property_type,
+                    property_state: data.property_state,
+                    property_city: data.property_city,
+                    property_neighborhood: data.property_neighborhood.split(',').map(item => item.trim()),
+                    payment_method: data.payment_methods
+                }
+            };
+
+            // Send the formatted data to the server
+            fetch('https://b0eivhfz0i.execute-api.us-east-2.amazonaws.com/prod/trigger', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formattedData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                alert('Formulário enviado com sucesso!');
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Erro ao enviar o formulário.');
+            });
+        });
+    </script>
+</body>
+</html>

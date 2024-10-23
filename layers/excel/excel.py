@@ -115,7 +115,7 @@ def calculate_desagio(auction):
         if appraised_value_float or first_bid_value_float:
             desagio = None
         else:
-            desagio = f"R$ {appraised_value_float - first_bid_value_float}"
+            desagio = f"R$ {round(appraised_value_float - first_bid_value_float,2)}"
     except:
         desagio = None
     

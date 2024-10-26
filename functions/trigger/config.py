@@ -13,4 +13,6 @@ class TriggerConfig:
 
         services.api_gateway.create_endpoint("POST", "/trigger", function, public=True)
 
+        services.secrets_manager.google_sheets_secret.grant_read(function)
+
         services.sns.grant_publish("auctions_topic", function)

@@ -30,6 +30,8 @@ class Lambda:
             self.layers.string_utils,
             self.layers.robots_layer,
             self.layers.excel_layer,
+            self.layers.auction_layer,
+            self.layers.clickup_layer,
         ]
 
         function = Function(

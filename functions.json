@@ -3,23 +3,14 @@
         "name": "LeiloesImovel",
         "path": "./functions/robots/leiloes_imovel",
         "description": "A scraper",
-        "timeout": 60,
+        "timeout": 900,
         "triggers": [
-            {
-                "service": "sns",
-                "trigger": "auctions_topic"
-            },
             {
                 "service": "event_bridge",
                 "trigger": "auctions"
             }
         ],
-        "invocations": [
-            {
-                "service": "sqs",
-                "resource": "results_queue"
-            }
-        ]
+        "invocations": []
     },
     {
         "name": "Trigger",
@@ -34,11 +25,6 @@
                 "public": true
             }
         ],
-        "invocations": [
-            {
-                "service": "sns",
-                "resource": "auctions_topic"
-            }
-        ]
+        "invocations": []
     }
 ]

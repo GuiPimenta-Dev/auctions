@@ -1,8 +1,6 @@
 import json
-import os
 from dataclasses import dataclass
 import excel
-import boto3
 
 
 @dataclass

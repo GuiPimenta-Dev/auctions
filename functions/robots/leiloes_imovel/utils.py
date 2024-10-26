@@ -3,7 +3,7 @@ import re
 import requests
 from fuzzywuzzy import process
 from bs4 import BeautifulSoup
-from auction import Auction
+from auction import Auction, Bid, Bids
 
 import re
 from datetime import datetime

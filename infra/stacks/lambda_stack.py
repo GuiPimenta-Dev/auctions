@@ -1,4 +1,3 @@
-from functions.pipeline.config import PipelineConfig
 from aws_cdk import Stack
 from constructs import Construct
 
@@ -19,7 +18,3 @@ class LambdaStack(Stack):
 
         # Trigger
         TriggerConfig(self.services)
-
-        # Pipeline
-        PipelineConfig(self.services)
-

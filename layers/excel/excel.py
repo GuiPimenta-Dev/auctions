@@ -3,7 +3,6 @@ import datetime
 import json
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-import ast
 from tenacity import retry, wait_fixed, stop_after_attempt
 
 
@@ -141,7 +140,7 @@ def update_clients_spreadsheet(client):
         "Bairros de interesse": ", ".join(client["property_information"]["property_neighborhood"]),
         "Tipo de imóvel": client["property_information"]["property_type"],
         "Finalidade do imóvel": client["personal_information"]["property_purpose"],
-        "Formas de pagamento relevantes": ", ".join(client["property_information"]["payment_method"]),
+        "Formas de pagamento relevantes": client["property_information"]["payment_method"],
     }
 
     # Prepare values in the order of the columns

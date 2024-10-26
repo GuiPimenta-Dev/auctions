@@ -8,6 +8,10 @@
             {
                 "service": "sns",
                 "trigger": "auctions_topic"
+            },
+            {
+                "service": "event_bridge",
+                "trigger": "auctions"
             }
         ],
         "invocations": [

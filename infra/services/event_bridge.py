@@ -6,7 +6,9 @@ from lambda_forge.trackers import trigger
 
 class EventBridge:
     def __init__(self, scope, context) -> None:
-
+        self.scope = scope
+        self.context = context
+        
         # self.event_bridge = events.EventBus.from_event_bus_arn(
         #     scope,
         #     id="EventBridge",

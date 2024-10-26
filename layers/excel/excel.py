@@ -21,29 +21,32 @@ secret_name = 'GoogleSheets'  # Replace with your secret name in Secrets Manager
 google_creds = get_google_credentials(secret_name)
 creds = ServiceAccountCredentials.from_json_keyfile_dict(google_creds)
 
-client = gspread.authorize(creds)
+excel_client = gspread.authorize(creds)
 
 # Access the spreadsheet by name and folder ID
 spreadsheet_name = "Imóveis"
 folder_id = ''  # Folder ID on Google Drive (if necessary)
-worksheet = client.open(title=spreadsheet_name, folder_id=folder_id).get_worksheet(0)
 
-# Spreadsheet columns for reference (including the "Atualizado em" column)
-columns = [
-    "Atualizado em",
-    "Estado (sigla)", "Cidade", "Endereço",
-    "Data do Leilão 1a Hasta", "Data do Leilão 2a Hasta", "Valor de Avaliação", "Lance Inicial",
-    "Deságio", "Valor 1a Hasta", "Valor 2a Hasta",
-    "Valores somados com leiloeiro + taxas edital 1a Hasta",
-    "Valores somados com leiloeiro + taxas edital 2a Hasta", "Tipo de Imóvel", "Modalidade de Venda","Metragem do imóvel",
-    "Medida da área privativa ou de uso exclusivo", "Número dormitórios", "Vagas garagem",
-    "Modelo de Leilão", "Status", "Fase do Leilão", "Site", "Observações",
-    "Valor da Entrada 25% (1a Hasta)", 
-    "Valor da Entrada 25% (2a Hasta)", "Mais 30 parcelas de:", "Valor m2 para região", "Imagem"
-]
 
 @retry(wait=wait_fixed(30), stop=stop_after_attempt(10))  # Wait 5 seconds and retry up to 10 times
-def update_spreadsheet(auction):
+def update_auctions_spreadsheet(auction, client):
+
+    # Spreadsheet columns for reference (including the "Atualizado em" column)
+    columns = [
+        "Atualizado em", "Cliente",
+        "Estado (sigla)", "Cidade", "Endereço",
+        "Data do Leilão 1a Hasta", "Data do Leilão 2a Hasta", "Valor de Avaliação", "Lance Inicial",
+        "Deságio", "Valor 1a Hasta", "Valor 2a Hasta",
+        "Valores somados com leiloeiro + taxas edital 1a Hasta",
+        "Valores somados com leiloeiro + taxas edital 2a Hasta", "Tipo de Imóvel", "Modalidade de Venda","Metragem do imóvel",
+        "Medida da área privativa ou de uso exclusivo", "Número dormitórios", "Vagas garagem",
+        "Modelo de Leilão", "Status", "Fase do Leilão", "Site", "Observações",
+        "Valor da Entrada 25% (1a Hasta)", 
+        "Valor da Entrada 25% (2a Hasta)", "Mais 30 parcelas de:", "Valor m2 para região", "Imagem"
+    ]
+
+    worksheet = excel_client.open(title=spreadsheet_name, folder_id=folder_id).get_worksheet(0)
+    
     # Get all values from the sheet
     current_date = datetime.datetime.now(datetime.timezone.utc).strftime("%d/%m/%Y")
 
@@ -62,6 +65,7 @@ def update_spreadsheet(auction):
 
     data = {
         "Atualizado em": current_date,
+        "Cliente": client,
         "Estado (sigla)": auction.state,
         "Cidade": auction.city,
         "Endereço": auction.address,
@@ -97,12 +101,54 @@ def update_spreadsheet(auction):
 
     if existing_row_index:
         # Update the entire row (including the "Atualizado em" field)
-        worksheet.update(f'A{existing_row_index}:AC{existing_row_index}', [row_values])
+        worksheet.update(f'A{existing_row_index}:AD{existing_row_index}', [row_values])
     else:
         # Add a new row
         next_row = len(sheet_data) + 2  # Start from the next empty row
         worksheet.insert_row(row_values, next_row)
 
+def update_clients_spreadsheet(client):
+
+    columns = [
+        "Data de Inclusão", "Nome Completo", "CPF/CNPJ", "E-mail", "Número do celular",
+        "Endereço", "Cidade", "Estado", "País", "Profissão",
+        "Possui experiência anteriores em leiloes?", "Qual sua principal dúvida sobre leiloes?",
+        "Valor de orçamento destinado ao investimento", "Estado de interesse", "Cidade de interesse",
+        "Bairros de interesse", "Tipo de imóvel", "Finalidade do imóvel", "Formas de pagamento relevantes"
+    ]
+    worksheet = excel_client.open(title=spreadsheet_name, folder_id=folder_id).get_worksheet(1)
+    
+    current_date = datetime.datetime.now(datetime.timezone.utc).strftime("%d/%m/%Y")
+
+    sheet_data = worksheet.get_all_records()
+
+    data = {
+        "Data de Inclusão": current_date,
+        "Nome Completo": client["personal_information"]["full_name"],
+        "CPF/CNPJ": client["personal_information"]["cpf_cnpj"],
+        "E-mail": client["personal_information"]["email"],
+        "Número do celular": client["personal_information"]["phone_number"],
+        "Endereço": client["personal_information"]["address"],
+        "Cidade": client["personal_information"]["city"],
+        "Estado": client["personal_information"]["state"],
+        "País": client["personal_information"]["country"],
+        "Profissão": client["personal_information"]["profession"],
+        "Possui experiência anteriores em leiloes?": client["personal_information"]["auction_experience"],
+        "Qual sua principal dúvida sobre leiloes?": client["personal_information"]["auction_question"],
+        "Valor de orçamento destinado ao investimento": client["property_information"]["budget"],
+        "Estado de interesse": client["property_information"]["property_state"],
+        "Cidade de interesse": client["property_information"]["property_city"],
+        "Bairros de interesse": ", ".join(client["property_information"]["property_neighborhood"]),
+        "Tipo de imóvel": client["property_information"]["property_type"],
+        "Finalidade do imóvel": client["personal_information"]["property_purpose"],
+        "Formas de pagamento relevantes": ", ".join(client["property_information"]["payment_method"]),
+    }
+
+    # Prepare values in the order of the columns
+    row_values = [data[col] for col in columns]
+    
+    next_row = len(sheet_data) + 2  # Start from the next empty row
+    worksheet.insert_row(row_values, next_row)
 
 def calculate_desagio(auction):
     try:
@@ -112,11 +158,15 @@ def calculate_desagio(auction):
         appraised_value_float = float(appraised_value.replace("R$ ", "").replace(".", "").replace(",", ".")) if appraised_value else None
         first_bid_value_float = float(first_bid_value.replace("R$ ", "").replace(".", "").replace(",", ".")) if first_bid_value else None
 
-        if appraised_value_float or first_bid_value_float:
-            desagio = None
-        else:
+        if appraised_value_float and first_bid_value_float:
             desagio = f"R$ {round(appraised_value_float - first_bid_value_float,2)}"
+        else:
+            desagio = None
     except:
         desagio = None
     
     return desagio
+
+def get_clients():
+    worksheet = excel_client.open(title=spreadsheet_name, folder_id=folder_id).get_worksheet(1)
+    return worksheet.get_all_records()

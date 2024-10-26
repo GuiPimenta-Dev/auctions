@@ -24,15 +24,10 @@ PROPERTY_TYPES = {
     "terreno": 3,
 }
 
-def get_all_states():
-    response = requests.get("https://www.leilaoimovel.com.br/getAllStates")
-
-    return response.json()["locations"]
-
 def find_property_types(inputs: list) -> list:
     results = []
 
-    for s in inputs:
+    for s in inputs.split(","):
         # Normalize the input string
         s_normalized = re.sub(r"\s+", " ", s.strip()).lower()
 
@@ -51,8 +46,25 @@ def find_property_types(inputs: list) -> list:
         type_id = normalized_property_types[closest_property_type[0]]
         results.append(str(type_id))
 
-    return results
+    return ",".join(results)
 
+from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
+
+def find_most_probable_city(city_name):
+    all_cities = requests.get("https://www.leilaoimovel.com.br/getAllCities").json()["locations"]
+
+    # Create a list of all names from the data array for fuzzy matching
+    name_list = [entry['name'] for entry in all_cities]
+    
+    # Use process.extractOne to find the best match
+    best_match = process.extractOne(city_name, name_list, scorer=fuzz.ratio)
+    
+    if best_match:
+        # Find the corresponding entry in data
+        matched_entry = next(entry for entry in all_cities if entry['name'] == best_match[0])
+        return matched_entry["id"]
+    return None
 
 def get_auction(box, state):
     name = css_select(box, "div.address p b")

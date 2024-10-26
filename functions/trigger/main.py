@@ -1,7 +1,7 @@
 import json
 import os
 from dataclasses import dataclass
-
+import excel
 import boto3
 
 
@@ -26,28 +26,10 @@ class Output:
 
 def lambda_handler(event, context):
 
-    sns_client = boto3.client("sns")
-
-    dynamodb = boto3.resource("dynamodb")
-    table_name = "Clientes"
-    table = dynamodb.Table(table_name)
 
     body = json.loads(event["body"])
-    personal_info = body["personal_information"]
-    property_info = body["property_information"]
 
-    unique_id = f"{personal_info['cpf_cnpj']}-{property_info['property_city']}-{property_info['property_type']}"
-
-    table.put_item(
-        Item={
-            "PK": unique_id,
-            "personal_information": personal_info,
-            "property_information": property_info,
-        }
-    )
-
-    TOPIC_ARN = os.environ["TOPIC_ARN"]
-    response = sns_client.publish(TopicArn=TOPIC_ARN, Message=event["body"])
+    excel.update_clients_spreadsheet(body)
 
     return {
         "statusCode": 200,
@@ -56,19 +38,7 @@ def lambda_handler(event, context):
     }
 
 
-# class PersonalInformation:
-#     full_name: str
-#     cpf_cnpj: str
-#     email: str
-#     phone_number: str
-#     address: str
-#     profession: str
-#     state: str
-#     city: str
-#     country: str
-#     property_purpose: str
-#     auction_experience: str
-#     auction_question: str
+
 
 
 event = {

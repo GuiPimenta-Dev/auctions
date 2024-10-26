@@ -28,7 +28,8 @@ class Lambda:
 
         layers = layers + [
             self.layers.string_utils,
-            self.layers.robots_layer
+            self.layers.robots_layer,
+            self.layers.excel_layer,
         ]
 
         function = Function(

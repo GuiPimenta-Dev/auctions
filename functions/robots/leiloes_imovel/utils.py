@@ -1,11 +1,9 @@
 import re
 
-from auction.auction import Bid, Bids
 import requests
 from fuzzywuzzy import process
 from bs4 import BeautifulSoup
 from auction import Auction
-from dataclasses import asdict, is_dataclass
 
 import re
 from datetime import datetime

@@ -1,8 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
-import utils
+from . import utils
 import excel
 import string_utils
+
 def lambda_handler(event, context):
 
     clients = excel.get_clients()

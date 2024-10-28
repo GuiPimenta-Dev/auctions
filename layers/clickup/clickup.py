@@ -1,9 +1,7 @@
 import json
-import os
 from dataclasses import dataclass
-import uuid
 
-from auction.auction import Auction, Bid, Bids
+from auction import Auction, Bid, Bids
 import boto3
 import requests
 from dotenv import load_dotenv

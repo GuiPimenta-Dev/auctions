@@ -1,12 +1,10 @@
 import json
 from dataclasses import dataclass
 
-from auction import Auction, Bid, Bids
+from auction import Auction
 import boto3
 import requests
-from dotenv import load_dotenv
 
-load_dotenv()
 LIST_ID = "901105021286"  # ClickUp List ID
 
 

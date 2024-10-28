@@ -1,7 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-# from . import utils
-import utils
+from . import utils
 import excel
 import string_utils
 

@@ -1,6 +1,6 @@
 import json
 from dataclasses import dataclass
-from auction.auction import Auction, Bid, Bids
+from auction import Auction, Bid, Bids
 import excel
 import clickup
 

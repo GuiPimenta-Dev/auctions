@@ -44,3 +44,42 @@ def find_state_based_on_state_of_interest(s: str) -> dict:
         return {"state": state_name.title(), "abbreviation": abbreviation}
     else:
         return {"state": None, "abbreviation": None}
+
+from geopy.geocoders import Nominatim
+
+def find_neighborhood(dms_string):
+    # Function to convert DMS to decimal
+    def convert(dms):
+        degrees, minutes = dms[:-1].split('°')
+        minutes, seconds = minutes.split("'")
+        seconds = seconds[:-1]  # Remove the seconds symbol
+
+        # Calculate the decimal value
+        decimal = float(degrees) + float(minutes) / 60 + float(seconds) / 3600
+        
+        # Apply the negative sign if direction is South or West
+        if 'S' in dms or 'W' in dms:
+            decimal = -decimal
+        
+        return decimal
+
+    # Split the input string and convert to decimal
+    parts = dms_string.strip().split()
+    lat_dms = parts[0]  # Latitude in DMS
+    lon_dms = parts[1]  # Longitude in DMS
+
+    latitude = convert(lat_dms)
+    longitude = convert(lon_dms)
+
+    # Initialize geolocator
+    geolocator = Nominatim(user_agent="geoapiExercises")
+
+    # Get the location based on latitude and longitude
+    location = geolocator.reverse((latitude, longitude), exactly_one=True)
+
+    # Return the neighborhood if available
+    if location:
+        neighborhood = location.raw['address'].get('suburb', "Bairro não encontrado")
+        return neighborhood
+    else:
+        return "Bairro não encontrado"

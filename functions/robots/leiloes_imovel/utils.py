@@ -1,4 +1,6 @@
 import re
+from geopy.geocoders import Photon
+from tenacity import retry, wait_fixed, stop_after_attempt
 
 import requests
 from fuzzywuzzy import process
@@ -80,6 +82,7 @@ def get_auction(box, state):
     appraised_value = css_select(soup, "div.appraised h2")
     discount_value = css_select(soup, "h2.discount-price")
     bids = extract_bid(css_select(soup, "div.bids"))
+    district = find_district(soup)
     general_info = get_general_info(soup)
     type_modality = next(
         (i["text"] for i in general_info if i["title"] == "Tipo:"), None
@@ -98,6 +101,7 @@ def get_auction(box, state):
         state=state,
         city=city,
         address=address,
+        district=district,
         appraised_value=appraised_value,
         discount_value=discount_value,
         m2=m2,
@@ -170,4 +174,34 @@ def get_details(soup, wanted):
         if wanted in detail:
             return detail.split(":")[-1].strip()
 
+
+
+from bs4 import BeautifulSoup
+from urllib.parse import urlparse, parse_qs
+
+@retry(wait=wait_fixed(5), stop=stop_after_attempt(10))  # Wait 5 seconds and retry up to 10 times
+def find_district(soup):
+
+    # Find the iframe element by title
+    iframe_element = soup.find('iframe', title='geolocalização')
+
+    # Extract the src attribute
+    if iframe_element:
+        iframe_src = iframe_element.get('src')
+        
+        # Parse the URL to extract latitude and longitude
+        parsed_url = urlparse(iframe_src)
+        query_params = parse_qs(parsed_url.query)
+        
+        # Extract latitude and longitude from the query parameters
+        if 'q' in query_params:
+            coordinates = query_params['q'][0]  # Get the first coordinate value
+            latitude, longitude = coordinates.split(',')
+            geolocator = Photon(user_agent="measurements")
+
+            location = geolocator.reverse((latitude, longitude), exactly_one=True)
+            neighborhood = location.raw["properties"].get("district") or location.raw["properties"].get("name")
+            return neighborhood
+          
+    
 

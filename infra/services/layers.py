@@ -16,7 +16,7 @@ class Layers:
         self.robots_layer = _lambda.LayerVersion.from_layer_version_arn(
             scope,
             id="LxmlLayer",
-            layer_version_arn="arn:aws:lambda:us-east-2:412381763358:layer:robots:1",
+            layer_version_arn="arn:aws:lambda:us-east-2:412381763358:layer:robots:2",
         )
 
         self.clickup_layer = _lambda.LayerVersion(

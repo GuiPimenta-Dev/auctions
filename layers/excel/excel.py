@@ -33,7 +33,7 @@ def update_auctions_spreadsheet(auction, client):
     # Spreadsheet columns for reference (including the "Atualizado em" column)
     columns = [
         "Atualizado em", "Cliente",
-        "Estado (sigla)", "Cidade", "Endereço",
+        "Estado (sigla)", "Cidade", "Bairro", "Endereço",
         "Data do Leilão 1a Hasta", "Data do Leilão 2a Hasta", "Valor de Avaliação", "Lance Inicial",
         "Deságio", "Valor 1a Hasta", "Valor 2a Hasta",
         "Valores somados com leiloeiro + taxas edital 1a Hasta",
@@ -68,6 +68,7 @@ def update_auctions_spreadsheet(auction, client):
         "Estado (sigla)": auction.state,
         "Cidade": auction.city,
         "Endereço": auction.address,
+        "Bairro": auction.district,
         "Data do Leilão 1a Hasta": auction.bids.first_bid.date,
         "Data do Leilão 2a Hasta": auction.bids.second_bid.date,
         "Valor de Avaliação": auction.appraised_value,
@@ -100,7 +101,7 @@ def update_auctions_spreadsheet(auction, client):
 
     if existing_row_index:
         # Update the entire row (including the "Atualizado em" field)
-        worksheet.update(f'A{existing_row_index}:AD{existing_row_index}', [row_values])
+        worksheet.update(f'A{existing_row_index}:AE{existing_row_index}', [row_values])
     else:
         # Add a new row
         next_row = len(sheet_data) + 2  # Start from the next empty row
@@ -169,3 +170,7 @@ def calculate_desagio(auction):
 def get_clients():
     worksheet = excel_client.open(title=spreadsheet_name, folder_id=folder_id).get_worksheet(1)
     return worksheet.get_all_records()
+
+def get_auction_row(row_number):
+    worksheet = excel_client.open(title=spreadsheet_name, folder_id=folder_id).get_worksheet(0)
+    return worksheet.row_values(row_number)

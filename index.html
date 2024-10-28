@@ -183,7 +183,22 @@
             <div class="form-group">
                 <label for="property_city">Cidade de interesse:</label>
                 <input type="text" id="property_city" name="property_city" placeholder="Curitiba" required>
+            </div> 
+
+            <div class="form-group">
+                <label for="state_select">Estado de interesse:</label>
+                <select id="state_select" name="property_state" required>
+                    <option value="">Selecione o estado</option>
+                </select>
             </div>
+
+            <div class="form-group">
+                <label for="city_select">Cidade de interesse:</label>
+                <select id="city_select" name="property_city" required>
+                    <option value="">Selecione a cidade</option>
+                </select>
+            </div>
+
 
             <div class="form-group">
                 <label for="property_neighborhood">Bairros de interesse:</label>
@@ -284,6 +299,46 @@
                 alert('Erro ao enviar o formulário.');
             });
         });
+
+        
+        document.addEventListener('DOMContentLoaded', function() {
+        const stateSelect = document.getElementById('state_select');
+        const citySelect = document.getElementById('city_select');
+
+        // Fetch and populate states
+        fetch('https://www.leilaoimovel.com.br/getAllStates')
+            .then(response => response.json())
+            .then(data => {
+                data.locations.forEach(location => {
+                    const option = document.createElement('option');
+                    option.value = location.state;
+                    option.text = `${location.state}`;
+                    stateSelect.add(option);
+                });
+            })
+            .catch(error => console.error('Erro ao carregar estados:', error));
+
+        // Fetch and populate cities based on selected state
+        stateSelect.addEventListener('change', () => {
+            const selectedState = stateSelect.value;
+            citySelect.innerHTML = '<option value="">Selecione a cidade</option>'; // Reset cities
+
+            fetch('https://www.leilaoimovel.com.br/getAllCities')
+                .then(response => response.json())
+                .then(data => {
+                    data.locations
+                        .filter(location => location.state === selectedState)
+                        .forEach(city => {
+                            const option = document.createElement('option');
+                            option.value = city.id;
+                            option.text = city.name;
+                            citySelect.add(option);
+                        });
+                })
+                .catch(error => console.error('Erro ao carregar cidades:', error));
+        });
+    });
+
     </script>
 </body>
 </html>

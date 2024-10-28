@@ -1,3 +1,4 @@
+from functions.create_card.config import CreateCardConfig
 from aws_cdk import Stack
 from constructs import Construct
 
@@ -18,3 +19,6 @@ class LambdaStack(Stack):
 
         # Trigger
         TriggerConfig(self.services)
+
+        # CreateCard
+        CreateCardConfig(self.services)

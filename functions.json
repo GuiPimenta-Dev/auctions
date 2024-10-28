@@ -26,5 +26,20 @@
             }
         ],
         "invocations": []
+    },
+    {
+        "name": "CreateCard",
+        "path": "./functions/create_card",
+        "description": "create clickup card",
+        "timeout": 60,
+        "triggers": [
+            {
+                "service": "api_gateway",
+                "trigger": "/create_card",
+                "method": "GET",
+                "public": true
+            }
+        ],
+        "invocations": []
     }
 ]

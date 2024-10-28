@@ -20,6 +20,7 @@ class Auction:
     state: str
     city: str
     address: str
+    district: str
     appraised_value: str
     discount_value: str
     bids: Bids 

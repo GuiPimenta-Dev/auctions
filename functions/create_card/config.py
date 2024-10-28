@@ -10,7 +10,7 @@ class CreateCardConfig:
             
         )
 
-        services.api_gateway.create_endpoint("GET", "/create_card", function, public=True)
+        services.api_gateway.create_endpoint("GET", "/card", function, public=True)
 
         services.secrets_manager.google_sheets_secret.grant_read(function)
 

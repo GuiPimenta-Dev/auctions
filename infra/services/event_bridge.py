@@ -1,6 +1,5 @@
 import aws_cdk.aws_events as events
 import aws_cdk.aws_events_targets as targets
-
 from lambda_forge.trackers import trigger
 
 

@@ -1,10 +1,10 @@
-import boto3
 import datetime
 import json
+
+import boto3
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-from tenacity import retry, wait_fixed, stop_after_attempt
-
+from tenacity import retry, stop_after_attempt, wait_fixed
 
 # Initialize AWS Secrets Manager
 secrets_manager = boto3.client('secretsmanager')
@@ -32,8 +32,8 @@ def update_auctions_spreadsheet(auction, client):
 
     # Spreadsheet columns for reference (including the "Atualizado em" column)
     columns = [
-        "Atualizado em", "Cliente",
-        "Estado (sigla)", "Cidade", "Bairro", "Endereço",
+        "Atualizado em", "Criar Card", "Cliente",
+        "Estado (sigla)", "Cidade", "Bairro", "Nome do Imóvel", "Endereço",
         "Data do Leilão 1a Hasta", "Data do Leilão 2a Hasta", "Valor de Avaliação", "Lance Inicial",
         "Deságio", "Valor 1a Hasta", "Valor 2a Hasta",
         "Valores somados com leiloeiro + taxas edital 1a Hasta",
@@ -64,11 +64,13 @@ def update_auctions_spreadsheet(auction, client):
 
     data = {
         "Atualizado em": current_date,
+        "Criar Card": None,
         "Cliente": client,
         "Estado (sigla)": auction.state,
         "Cidade": auction.city,
         "Endereço": auction.address,
         "Bairro": auction.district,
+        "Nome do Imóvel": auction.name,
         "Data do Leilão 1a Hasta": auction.bids.first_bid.date,
         "Data do Leilão 2a Hasta": auction.bids.second_bid.date,
         "Valor de Avaliação": auction.appraised_value,
@@ -101,11 +103,15 @@ def update_auctions_spreadsheet(auction, client):
 
     if existing_row_index:
         # Update the entire row (including the "Atualizado em" field)
-        worksheet.update(f'A{existing_row_index}:AE{existing_row_index}', [row_values])
+        worksheet.update(f'A{existing_row_index}:AG{existing_row_index}', [row_values], raw=False)
     else:
         # Add a new row
-        next_row = len(sheet_data) + 2  # Start from the next empty row
+        next_row = len(sheet_data) + 2
         worksheet.insert_row(row_values, next_row)
+        card = f"https://sv1th8vfbh.execute-api.us-east-2.amazonaws.com/prod/card?index={next_row}"
+        worksheet.update_acell(f'B{next_row}', f"=HYPERLINK(\"{card}\"; \"Criar Card\")")
+    
+    
 
 def update_clients_spreadsheet(client):
 
@@ -173,4 +179,6 @@ def get_clients():
 
 def get_auction_row(row_number):
     worksheet = excel_client.open(title=spreadsheet_name, folder_id=folder_id).get_worksheet(0)
-    return worksheet.row_values(row_number)
+    columns = worksheet.row_values(1)
+    values = worksheet.row_values(row_number)
+    return dict(zip(columns, values))

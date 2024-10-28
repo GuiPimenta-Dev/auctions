@@ -1,7 +1,7 @@
-from functions.create_card.config import CreateCardConfig
 from aws_cdk import Stack
 from constructs import Construct
 
+from functions.create_card.config import CreateCardConfig
 from functions.robots.leiloes_imovel.config import LeiloesImovelConfig
 from functions.trigger.config import TriggerConfig
 from infra.services import Services

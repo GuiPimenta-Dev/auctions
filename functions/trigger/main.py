@@ -1,7 +1,9 @@
 import json
 from dataclasses import dataclass
+
 import excel
-from clickup import create_client, PersonalInformation, PropertyInformation
+from clickup import PersonalInformation, PropertyInformation, create_client
+
 
 @dataclass
 class Input:

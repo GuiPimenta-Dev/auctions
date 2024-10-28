@@ -1,8 +1,10 @@
 import json
 from dataclasses import dataclass
-from auction import Auction, Bid, Bids
-import excel
+
 import clickup
+import excel
+from auction import Auction, Bid, Bids
+
 
 @dataclass
 class Input:
@@ -18,40 +20,43 @@ def lambda_handler(event, context):
     index = event["queryStringParameters"]["index"]
 
     row = excel.get_auction_row(index)
+
+    #  ['Data de Inclusão', 'Criar Card', 'Cliente', 'Estado', 'Cidade', 'Bairro', 'Nome do Imóvel', 'Endereço', 'Data 1o Leilão', 'Data 2o Leilão', 'Valor de Avaliação', 'Lance Inicial', 'Deságio', 'Valor 1a Hasta', 'Valor 2a Hasta', 'Valores somados com leiloeiro + taxas edital 1a Hasta', 'Valores somados com leiloeiro + taxas edital 2a Hasta', 'Tipo de Imóvel', 'Modalidade de Venda', 'Metragem do imóvel', 'Medida da área privativa ou de uso exclusivo', 'Número dormitórios', 'Vagas garagem', 'Modelo de Leilão (Judicial, Extra...)', 'Status', 'Fase do Leilão', 'Site', 'Observações', 'Valor da Entrada 25% (1a Hasta)', 'Valor da Entrada 25% (2a Hasta)', 'Mais 30 parcelas de:', 'Valor m2 para região', 'Imagem']
     auction = Auction(
-        name=row[0],
-        type_=row[15],
-        modality=row[15],
-        state=row[2],
-        city=row[3],
-        address=row[5],
-        district=row[6],
-        appraised_value=row[8],
-        discount_value=row[9],
+        name=row["Nome do Imóvel"],
+        type_=row["Tipo de Imóvel"],
+        modality=row["Modalidade de Venda"],
+        state=row["Estado"],
+        city=row["Cidade"],
+        address=row["Endereço"],
+        district=row["Bairro"],
+        appraised_value=row["Valor de Avaliação"],
+        discount_value=row["Lance Inicial"],
         bids=Bids(
-            first_bid=Bid(date=row[6], value=row[11]),
-            second_bid=Bid(date=row[7], value=row[12])
+            first_bid=Bid(date=row["Data 1o Leilão"], value=row["Valor 1a Hasta"]),
+            second_bid=Bid(date=row["Data 2o Leilão"], value=row["Valor 2a Hasta"])
         ),
-        bedrooms=row[19],
-        parking=row[20],
-        image=row[30],
-        url=row[24],
-        files=row[17],
-        general_info=row[18],
-        m2=row[17]
+        bedrooms=row["Dormitórios"],
+        parking=row["Vagas garagem"],
+        image=row["Imagem"],
+        url=row["Site"],
+        files=None,
+        general_info=None,
+        m2=row["Metragem do imóvel"]
     )
-    clickup.create_auction(auction, row[1])
+    response = clickup.create_auction(auction, row["Cliente"])
 
     return {
-        "statusCode": 200,
-        "body": json.dumps({"message": "Hello World!"}),
-        "headers": {"Access-Control-Allow-Origin": "*"}
+        "statusCode": 302,
+        "headers": {
+            "Location": response["url"]
+        }
     }
 
 if __name__ == "__main__":
     event = {
         "queryStringParameters": {
-            "index": "8"
+            "index": "2"
         }
     }
     lambda_handler(event, {})

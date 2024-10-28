@@ -1,9 +1,10 @@
+import excel
 import requests
-from bs4 import BeautifulSoup
+import string_utils
 # from . import utils
 import utils
-import excel
-import string_utils
+from bs4 import BeautifulSoup
+
 
 def lambda_handler(event, context):
 
@@ -33,6 +34,7 @@ def lambda_handler(event, context):
             boxes = soup.select("div.place-box")
             for box in boxes:
                 auction = utils.get_auction(box, client["Estado de interesse:"])
+                print(auction.url)
 
                 excel.update_auctions_spreadsheet(auction, client["Nome Completo:"])
                 

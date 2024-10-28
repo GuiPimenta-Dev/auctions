@@ -1,9 +1,9 @@
 import json
 from dataclasses import dataclass
 
-from auction import Auction
 import boto3
 import requests
+from auction import Auction
 
 LIST_ID = "901105021286"  # ClickUp List ID
 
@@ -131,8 +131,31 @@ def create_auction(auction: Auction, client):
     custom_fields = {field["name"]: field["id"] for field in custom_fields}
 
     
+    description = f"""
+    Informações do Leilão:
+
+    Nome: {auction.name}
+    Tipo: {auction.type_}
+    Modalidade: {auction.modality}
+    Estado: {auction.state}
+    Cidade: {auction.city}
+    Endereço: {auction.address}
+    Bairro: {auction.district}
+    Valor Avaliado: {auction.appraised_value}
+    Valor de Deságio: {auction.discount_value}
+    Primeiro Lance: {auction.bids.first_bid.value} em {auction.bids.first_bid.date}
+    Segundo Lance: {auction.bids.second_bid.value} em {auction.bids.second_bid.date}
+    Dormitórios: {auction.bedrooms}
+    Vagas de Garagem: {auction.parking}
+    Metragem: {auction.m2}
+    Imagem: {auction.image}
+    URL: {auction.url}
+    """
+
+
     task_data = {
         'name': auction.name,
+        'description': description,
         'assignees': [],
         'tags': [],
          'custom_fields': [
@@ -153,5 +176,5 @@ def create_auction(auction: Auction, client):
     }
 
     response = requests.post(f'https://api.clickup.com/api/v2/list/{LIST_ID}/task', json=task_data, headers=headers)
-    print(response.json())
+    return response.json()
 

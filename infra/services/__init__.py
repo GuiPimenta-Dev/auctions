@@ -1,6 +1,6 @@
-from infra.services.event_bridge import EventBridge
 from infra.services.api_gateway import APIGateway
 from infra.services.aws_lambda import Lambda
+from infra.services.event_bridge import EventBridge
 from infra.services.layers import Layers
 from infra.services.secrets_manager import SecretsManager
 

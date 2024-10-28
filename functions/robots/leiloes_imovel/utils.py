@@ -1,14 +1,13 @@
 import re
-from geopy.geocoders import Photon
-from tenacity import retry, wait_fixed, stop_after_attempt
+from datetime import datetime
+from urllib.parse import parse_qs, urlparse
 
 import requests
-from fuzzywuzzy import process
-from bs4 import BeautifulSoup
 from auction import Auction, Bid, Bids
-
-import re
-from datetime import datetime
+from bs4 import BeautifulSoup
+from fuzzywuzzy import process
+from geopy.geocoders import Photon
+from tenacity import retry, stop_after_attempt, wait_fixed
 
 # Dictionary with property types and their IDs
 PROPERTY_TYPES = {
@@ -48,8 +47,8 @@ def find_property_types(inputs: list) -> list:
 
     return ",".join(results)
 
-from fuzzywuzzy import fuzz
-from fuzzywuzzy import process
+from fuzzywuzzy import fuzz, process
+
 
 def find_most_probable_city(city_name):
     all_cities = requests.get("https://www.leilaoimovel.com.br/getAllCities").json()["locations"]
@@ -176,10 +175,8 @@ def get_details(soup, wanted):
 
 
 
-from bs4 import BeautifulSoup
-from urllib.parse import urlparse, parse_qs
 
-@retry(wait=wait_fixed(5), stop=stop_after_attempt(10))  # Wait 5 seconds and retry up to 10 times
+
 def find_district(soup):
 
     # Find the iframe element by title
@@ -198,10 +195,13 @@ def find_district(soup):
             coordinates = query_params['q'][0]  # Get the first coordinate value
             latitude, longitude = coordinates.split(',')
             geolocator = Photon(user_agent="measurements")
-
-            location = geolocator.reverse((latitude, longitude), exactly_one=True)
-            neighborhood = location.raw["properties"].get("district") or location.raw["properties"].get("name")
-            return neighborhood
+            
+            try:
+                location = geolocator.reverse((latitude, longitude), exactly_one=True)
+                neighborhood = location.raw["properties"].get("district") or location.raw["properties"].get("name")
+                return neighborhood
+            except:
+                return None
           
     
 

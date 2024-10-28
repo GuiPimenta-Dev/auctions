@@ -49,5 +49,6 @@ class Lambda:
         )
 
         self.sm.google_sheets_secret.grant_read(function)
+        self.sm.clickup_secret.grant_read(function)
         self.functions[name] = function
         return function

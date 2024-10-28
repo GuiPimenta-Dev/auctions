@@ -151,21 +151,6 @@ def create_auction(auction: Auction, client):
         'description': description,
         'assignees': [],
         'tags': [],
-         'custom_fields': [
-        {
-            'id': custom_fields["Nome Completo:"],  
-            'value': client  
-        },
-        {
-            'id': custom_fields["Tipo do imóvel"],
-            'value': auction.type_
-        },
-        {
-            'id': custom_fields["Bairro:"],
-            'value': auction.district
-        },
-        
-    ]
     }
 
     response = requests.post(f'https://api.clickup.com/api/v2/list/{LIST_ID}/task', json=task_data, headers=headers)

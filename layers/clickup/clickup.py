@@ -52,13 +52,6 @@ class Task:
     property_information: PropertyInformation
     auction: Auction
 
-def format_money(amount):
-    amount = float(amount)
-    formatted_amount = (
-        f"R$ {amount:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-    )
-    return formatted_amount
-
 
 def create_client(client: PersonalInformation, property: PropertyInformation):
 
@@ -91,7 +84,7 @@ Tipo de Propriedade: {property.property_type}
 Cidade: {property.property_city}
 Estado: {property.property_state}
 Bairros: {', '.join(property.property_neighborhood)}
-Orçamento: {format_money(property.budget)}
+Orçamento: {property.budget}
 Método de Pagamento: {property.payment_method}
 
 """

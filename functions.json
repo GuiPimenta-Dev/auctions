@@ -35,7 +35,7 @@
         "triggers": [
             {
                 "service": "api_gateway",
-                "trigger": "/create_card",
+                "trigger": "/card",
                 "method": "GET",
                 "public": true
             }

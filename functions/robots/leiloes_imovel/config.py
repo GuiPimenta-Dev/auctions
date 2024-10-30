@@ -15,7 +15,7 @@ class LeiloesImovelConfig:
         services.secrets_manager.google_sheets_secret.grant_read(function)
 
         services.event_bridge.schedule(
-            expression="rate(1 day)",
+            expression="cron(0 8 * * ? *)",
             rule_name="auctions",
             function=function,
         )

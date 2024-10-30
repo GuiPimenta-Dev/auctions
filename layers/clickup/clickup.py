@@ -102,7 +102,8 @@ Método de Pagamento: {property.payment_method}
     }
 
     response = requests.post(f'https://api.clickup.com/api/v2/list/{LIST_ID}/task', json=task_data, headers=headers)
-    print(response.json())
+    return response.json()
+
 
 
 
@@ -149,7 +150,7 @@ def create_auction(auction: Auction, client):
 
 
     task_data = {
-        'name': auction.name,
+        'name': f"{client} - {auction.name}",
         'description': description,
         'assignees': [],
         'tags': [],

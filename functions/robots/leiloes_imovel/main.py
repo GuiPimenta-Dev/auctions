@@ -1,7 +1,8 @@
 import excel
 import requests
 import string_utils
-from . import utils
+# from . import utils
+import utils
 from bs4 import BeautifulSoup
 
 
@@ -18,7 +19,6 @@ def lambda_handler(event, context):
             
         budget = utils.format_currency(client["Valor de orçamento destinado ao investimento:"])
         
-        # Find types of property
         url = f"https://www.leilaoimovel.com.br/encontre-seu-imovel?s=&tipo={property_types}&cidade={city}&preco_max={budget}"
         response = requests.get(url)
 

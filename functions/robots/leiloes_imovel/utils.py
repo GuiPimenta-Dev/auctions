@@ -174,7 +174,16 @@ def get_details(soup, wanted):
             return detail.split(":")[-1].strip()
 
 
-
+def format_currency(value):
+    sanitized_value = re.sub(r'[^\d,.-]', '', str(value))
+    
+    sanitized_value = sanitized_value.replace(',', '.')
+    
+    try:
+        return int(float(sanitized_value)) * 100
+    except ValueError:
+        return value * 100
+        
 
 
 def find_district(soup):
@@ -205,8 +214,12 @@ def find_district(soup):
           
     
 
+
 def format_currency(value):
+    numeric_value = re.sub(r'\D', '', str(value))
     try:
-        return int(value) * 1000
+        # Converte para inteiro
+        return int(numeric_value)
     except ValueError:
-        return value  # If not convertible to float, return original value
+        # Se não for possível converter, retorna o valor original
+        return value

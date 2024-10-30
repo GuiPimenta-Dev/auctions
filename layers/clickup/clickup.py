@@ -141,8 +141,10 @@ def create_auction(auction: Auction, client):
     Dormitórios: {auction.bedrooms}
     Vagas de Garagem: {auction.parking}
     Metragem: {auction.m2}
+    Arquivos: {auction.files}
     Imagem: {auction.image}
     URL: {auction.url}
+
     """
 
 

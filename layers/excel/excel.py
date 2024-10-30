@@ -141,7 +141,7 @@ def update_clients_spreadsheet(client):
         "Profissão": client["personal_information"]["profession"],
         "Possui experiência anteriores em leiloes?": client["personal_information"]["auction_experience"],
         "Qual sua principal dúvida sobre leiloes?": client["personal_information"]["auction_question"],
-        "Valor de orçamento destinado ao investimento": client["property_information"]["budget"],
+        "Valor de orçamento destinado ao investimento": str(client["property_information"]["budget"]),
         "Estado de interesse": client["property_information"]["property_state"],
         "Cidade de interesse": client["property_information"]["property_city"],
         "Bairros de interesse": ", ".join(client["property_information"]["property_neighborhood"]),
@@ -177,8 +177,20 @@ def get_clients():
     worksheet = excel_client.open(title=spreadsheet_name, folder_id=folder_id).get_worksheet(1)
     return worksheet.get_all_records()
 
+def format_currency(value):
+    # Check if the value can be converted to a float, otherwise return as is
+    try:
+        float_value = float(value)
+        # Format as currency with Brazilian Real symbol, and two decimal points
+        return f"R$ {float_value:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    except ValueError:
+        return value  # If not convertible to float, return original value
+
 def get_auction_row(row_number):
     worksheet = excel_client.open(title=spreadsheet_name, folder_id=folder_id).get_worksheet(0)
     columns = worksheet.row_values(1)
     values = worksheet.row_values(row_number)
-    return dict(zip(columns, values))
+    
+    # Format values to currency if they appear to be numeric
+    formatted_values = [format_currency(value) for value in values]
+    return dict(zip(columns, formatted_values))

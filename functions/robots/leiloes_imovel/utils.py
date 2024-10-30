@@ -205,3 +205,8 @@ def find_district(soup):
           
     
 
+def format_currency(value):
+    try:
+        return int(value) * 1000
+    except ValueError:
+        return value  # If not convertible to float, return original value

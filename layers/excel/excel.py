@@ -28,7 +28,7 @@ folder_id = ''  # Folder ID on Google Drive (if necessary)
 
 
 @retry(wait=wait_fixed(30), stop=stop_after_attempt(10))  # Wait 5 seconds and retry up to 10 times
-def update_auctions_spreadsheet(auction, client):
+def update_auctions_spreadsheet(auction, client, search_url):
 
     # Spreadsheet columns for reference (including the "Atualizado em" column)
     columns = [
@@ -41,7 +41,7 @@ def update_auctions_spreadsheet(auction, client):
         "Medida da área privativa ou de uso exclusivo", "Número dormitórios", "Vagas garagem",
         "Modelo de Leilão", "Status", "Fase do Leilão", "Site", "Observações",
         "Valor da Entrada 25% (1a Hasta)", 
-        "Valor da Entrada 25% (2a Hasta)", "Mais 30 parcelas de:", "Valor m2 para região", "Imagem"
+        "Valor da Entrada 25% (2a Hasta)", "Mais 30 parcelas de:", "Valor m2 para região", "Imagem", "Busca"
     ]
 
     worksheet = excel_client.open(title=spreadsheet_name, folder_id=folder_id).get_worksheet(0)
@@ -96,6 +96,7 @@ def update_auctions_spreadsheet(auction, client):
         "Valor da Entrada 25% (2a Hasta)": None,
         "Valor m2 para região": None,
         "Imagem": auction.image,
+        "Busca": search_url,
     }
 
     # Prepare values in the order of the columns
@@ -103,7 +104,7 @@ def update_auctions_spreadsheet(auction, client):
 
     if existing_row_index:
         # Update the entire row (including the "Atualizado em" field)
-        worksheet.update(f'A{existing_row_index}:AG{existing_row_index}', [row_values], raw=False)
+        worksheet.update(f'A{existing_row_index}:AH{existing_row_index}', [row_values], raw=False)
     else:
         # Add a new row
         next_row = len(sheet_data) + 2

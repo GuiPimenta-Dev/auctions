@@ -166,7 +166,27 @@ def get_files(soup):
             files.append({"title": title, "link": link})
     return files
 
+def find_district_codes(client_districts, city):
+    districts = []
+    response = requests.get(f"https://www.leilaoimovel.com.br/getAreas?list={city}")
+    
+    try:
+        areas = response.json()["areas"]
+        client_districts = client_districts.split(",")  # Convert to list
 
+        for area in areas:
+            # Use fuzzy matching to find the best match in client_districts
+            _, score = process.extractOne(area["name"], client_districts)
+            
+            # Set a threshold score (e.g., 80) to accept the match
+            if score >= 95:
+                districts.append(str(area["id"]))
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
+
+    return ",".join(districts)
 def get_details(soup, wanted):
     details = css_select_list(soup, "div.detail")
     for detail in details:

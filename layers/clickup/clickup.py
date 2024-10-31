@@ -106,9 +106,8 @@ Método de Pagamento: {property.payment_method}
 
 
 
-
-def create_auction(auction: Auction, client):
-    LIST_ID = '901105512625'  
+def create_auction(auction, client):
+    LIST_ID = '901105512625'
     sm_client = boto3.client("secretsmanager")
     response = sm_client.get_secret_value(SecretId="Clickup")
     secret = json.loads(response["SecretString"])
@@ -120,42 +119,55 @@ def create_auction(auction: Auction, client):
         'Content-Type': 'application/json',
     }
 
+    # Fetch custom fields from ClickUp
     response = requests.get(f'https://api.clickup.com/api/v2/list/{LIST_ID}/field', headers=headers)
     custom_fields = response.json().get('fields', [])
     custom_fields = {field["name"]: field["id"] for field in custom_fields}
 
-    
-    description = f"""
-    Informações do Leilão:
-
-    Nome: {auction.name}
-    Tipo: {auction.type_}
-    Modalidade: {auction.modality}
-    Estado: {auction.state}
-    Cidade: {auction.city}
-    Endereço: {auction.address}
-    Bairro: {auction.district}
-    Valor Avaliado: {auction.appraised_value}
-    Valor de Deságio: {auction.discount_value}
-    Primeiro Lance: {auction.bids.first_bid.value} em {auction.bids.first_bid.date}
-    Segundo Lance: {auction.bids.second_bid.value} em {auction.bids.second_bid.date}
-    Dormitórios: {auction.bedrooms}
-    Vagas de Garagem: {auction.parking}
-    Metragem: {auction.m2}
-    Arquivos: {auction.files}
-    Imagem: {auction.image}
-    URL: {auction.url}
-
-    """
-
-
+    # Task data
     task_data = {
         'name': f"{client} - {auction.name}",
-        'description': description,
         'assignees': [],
         'tags': [],
+        "custom_fields": [
+            {"id": custom_fields["Tipo de Imóvel"], "value": auction.type_},
+            {"id": custom_fields["Modalidade de Venda"], "value": auction.modality},
+            {"id": custom_fields["Estado"], "value": auction.state},
+            {"id": custom_fields["Cidade"], "value": auction.city},
+            {"id": custom_fields["Endereço"], "value": auction.address},
+            {"id": custom_fields["Bairro"], "value": auction.district},
+            {"id": custom_fields["Valor de Avaliação"], "value": auction.appraised_value},
+            {"id": custom_fields["Lance Inicial"], "value": auction.discount_value},
+            {"id": custom_fields["Data 1o Leilão"], "value": auction.bids.first_bid.date},
+            {"id": custom_fields["Data 2o Leilão"], "value": auction.bids.second_bid.date},
+            {"id": custom_fields["Dormitórios"], "value": auction.bedrooms},
+            {"id": custom_fields["Vagas de Garagem"], "value": auction.parking},
+            {"id": custom_fields["🌐 Site"], "value": auction.url},
+            {"id": custom_fields["Metragem do Imóvel"], "value": auction.m2},
+        ]
     }
 
+    # Create the task
     response = requests.post(f'https://api.clickup.com/api/v2/list/{LIST_ID}/task', json=task_data, headers=headers)
-    return response.json()
+    task = response.json()
+
+    if auction.image:
+        task_id = task['id']
+        
+        # Fetch image content from the URL
+        image_response = requests.get(auction.image)
+        if image_response.status_code == 200:
+            files = {
+                'attachment': ('cover_image.jpg', image_response.content, 'image/jpeg')
+            }
+            attachment_response = requests.post(
+                f'https://api.clickup.com/api/v2/task/{task_id}/attachment?custom_task_ids=true&set_cover=true',
+                headers={'Authorization': API_TOKEN},
+                files=files
+            )
+            attachment_response.raise_for_status()  # Raises an error if the request failed
+        else:
+            print(f"Failed to fetch cover image. Status code: {image_response.status_code}")
+
+    return task
 

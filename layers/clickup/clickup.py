@@ -158,7 +158,7 @@ def create_auction(auction, client):
         image_response = requests.get(auction.image)
         if image_response.status_code == 200:
             files = {
-                'attachment': ('cover_image.jpg', image_response.content, 'image/jpeg')
+                'attachment': (f'{auction.name}.jpg', image_response.content, 'image/jpeg')
             }
             attachment_response = requests.post(
                 f'https://api.clickup.com/api/v2/task/{task_id}/attachment?custom_task_ids=true&set_cover=true',

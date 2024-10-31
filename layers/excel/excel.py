@@ -55,7 +55,7 @@ def update_auctions_spreadsheet(auction, client, search_url):
         (
             idx + 2
             for idx, record in enumerate(sheet_data)
-            if record.get("Site") == auction.url
+            if record.get("Site") == auction.url and record.get("Cliente") == client
         ),
         None,
     )

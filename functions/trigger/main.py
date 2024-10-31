@@ -67,32 +67,32 @@ def lambda_handler(event, context):  # sourcery skip: avoid-builtin-shadow
 
 
 
-event = {
-    "body": json.dumps(
-        {
-            "personal_information": {
-                "full_name": "John Doe",
-                "cpf_cnpj": "12345678900",
-                "email": "jhon@example.com",
-                "phone_number": "123456789",
-                "address": "Rua A, 123",
-                "profession": "Developer",
-                "state": "SP",
-                "city": "São Paulo",
-                "country": "Brazil",
-                "property_purpose": "residence",
-                "auction_experience": "no",
-                "auction_question": None,
-            },
-            "property_information": {
-                "property_type": "apartment",
-                "property_state": "SP",
-                "property_city": "São Paulo",
-                "property_neighborhood": ["Vila Mariana"],
-                "budget": 500000,
-                "payment_method": "financing",
-            },
-        }
-    )
-}
-lambda_handler(event, {})
+# event = {
+#     "body": json.dumps(
+#         {
+#             "personal_information": {
+#                 "full_name": "John Doe",
+#                 "cpf_cnpj": "12345678900",
+#                 "email": "jhon@example.com",
+#                 "phone_number": "123456789",
+#                 "address": "Rua A, 123",
+#                 "profession": "Developer",
+#                 "state": "SP",
+#                 "city": "São Paulo",
+#                 "country": "Brazil",
+#                 "property_purpose": "residence",
+#                 "auction_experience": "no",
+#                 "auction_question": None,
+#             },
+#             "property_information": {
+#                 "property_type": "apartment",
+#                 "property_state": "SP",
+#                 "property_city": "São Paulo",
+#                 "property_neighborhood": ["Vila Mariana"],
+#                 "budget": 500000,
+#                 "payment_method": "financing",
+#             },
+#         }
+#     )
+# }
+# lambda_handler(event, {})

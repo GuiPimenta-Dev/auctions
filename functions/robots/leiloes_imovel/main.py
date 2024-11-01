@@ -47,7 +47,6 @@ def lambda_handler(event, context):
 
                 if auction.url == "https://www.leilaoimovel.com.br/imoveis-springfield":
                     continue
-
                 excel.update_auctions_spreadsheet(auction, client["Nome Completo:"], url)
                 
 

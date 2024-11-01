@@ -206,6 +206,24 @@ def format_currency(value):
         
 
 
+def is_value_in_budget(value1, value2):
+    def sanitize_money(value):
+        # Remove currency symbols and common separators (commas, spaces)
+        clean_value = re.sub(r'[^\d.]', '', value)
+        # Convert to float
+        try:
+            return float(clean_value)
+        except ValueError:
+            raise ValueError(f"Invalid money format: {value}")
+
+    # Sanitize and convert both values
+    amount1 = sanitize_money(value1)
+    amount2 = sanitize_money(value2)
+    
+    # Return True if the first amount is greater than the second, False otherwise
+    return amount1 > amount2
+
+
 def find_district(soup):
 
     # Find the iframe element by title

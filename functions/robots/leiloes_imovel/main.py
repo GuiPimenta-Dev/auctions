@@ -45,6 +45,9 @@ def lambda_handler(event, context):
             for box in boxes:
                 auction = utils.get_auction(box, client["Estado de interesse:"])
 
+                if auction.url == "https://www.leilaoimovel.com.br/imoveis-springfield":
+                    continue
+
                 excel.update_auctions_spreadsheet(auction, client["Nome Completo:"], url)
                 
 

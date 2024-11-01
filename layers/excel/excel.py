@@ -109,7 +109,7 @@ def update_auctions_spreadsheet(auction, client, search_url):
         # Add a new row
         next_row = len(sheet_data) + 2
         worksheet.insert_row(row_values, next_row)
-        card = f"https://sv1th8vfbh.execute-api.us-east-2.amazonaws.com/prod/card?index={next_row}"
+        card = f"https://sv1th8vfbh.execute-api.us-east-2.amazonaws.com/prod/card?name={client}&url={auction.url}"
         worksheet.update_acell(f'B{next_row}', f"=HYPERLINK(\"{card}\"; \"Criar Card\")")
     
     
@@ -117,7 +117,7 @@ def update_auctions_spreadsheet(auction, client, search_url):
 def update_clients_spreadsheet(client):
 
     columns = [
-        "Data de Inclusão", "Nome Completo", "CPF/CNPJ", "E-mail", "Número do celular",
+        "Data de Inclusão", "Nome Completo", "Data de Nascimento", "CPF/CNPJ", "E-mail", "Número do celular",
         "Endereço", "Cidade", "Estado", "País", "Profissão",
         "Possui experiência anteriores em leiloes?", "Qual sua principal dúvida sobre leiloes?",
         "Valor de orçamento destinado ao investimento", "Estado de interesse", "Cidade de interesse",
@@ -132,6 +132,7 @@ def update_clients_spreadsheet(client):
     data = {
         "Data de Inclusão": current_date,
         "Nome Completo": client["personal_information"]["full_name"],
+        "Data de Nascimento": client["personal_information"]["birthday"],
         "CPF/CNPJ": client["personal_information"]["cpf_cnpj"],
         "E-mail": client["personal_information"]["email"],
         "Número do celular": client["personal_information"]["phone_number"],
@@ -178,11 +179,17 @@ def get_clients():
     worksheet = excel_client.open(title=spreadsheet_name, folder_id=folder_id).get_worksheet(1)
     return worksheet.get_all_records()
 
-
-def get_auction_row(row_number):
+def get_auction_row(name, url):
     worksheet = excel_client.open(title=spreadsheet_name, folder_id=folder_id).get_worksheet(0)
-    columns = worksheet.row_values(1)
-    values = worksheet.row_values(row_number)
+    rows = worksheet.get_all_values()  # Retrieve all rows
+    columns = rows[0]  # Header row for reference
+    
+    for row in rows[1:]:  # Skip header row
+        row_data = dict(zip(columns, row))  # Create a dictionary for easier access
+        if row_data.get("Cliente") == name and row_data.get("Site") == url:
+            return row_data  # Return the row as a dictionary if match is found
+            
+    return None  # Return None if no matching row is found
+
     
     # Format values to currency if they appear to be numeric
-    return dict(zip(columns, values))

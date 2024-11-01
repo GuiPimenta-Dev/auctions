@@ -17,9 +17,10 @@ class Output:
 
 def lambda_handler(event, context):
 
-    index = event["queryStringParameters"]["index"]
+    name = event["queryStringParameters"]["name"]
+    url = event["queryStringParameters"]["url"]
 
-    row = excel.get_auction_row(index)
+    row = excel.get_auction_row(name, url)
 
     #  ['Data de Inclusão', 'Criar Card', 'Cliente', 'Estado', 'Cidade', 'Bairro', 'Nome do Imóvel', 'Endereço', 'Data 1o Leilão', 'Data 2o Leilão', 'Valor de Avaliação', 'Lance Inicial', 'Deságio', 'Valor 1a Hasta', 'Valor 2a Hasta', 'Valores somados com leiloeiro + taxas edital 1a Hasta', 'Valores somados com leiloeiro + taxas edital 2a Hasta', 'Tipo de Imóvel', 'Modalidade de Venda', 'Metragem do imóvel', 'Medida da área privativa ou de uso exclusivo', 'Número dormitórios', 'Vagas garagem', 'Modelo de Leilão (Judicial, Extra...)', 'Status', 'Fase do Leilão', 'Site', 'Observações', 'Valor da Entrada 25% (1a Hasta)', 'Valor da Entrada 25% (2a Hasta)', 'Mais 30 parcelas de:', 'Valor m2 para região', 'Imagem']
     auction = Auction(
@@ -56,7 +57,8 @@ def lambda_handler(event, context):
 if __name__ == "__main__":
     event = {
         "queryStringParameters": {
-            "index": "2"
+            "name": "Carlos Wolff",
+            "url": "https://www.leilaoimovel.com.br/imovel/pr/curitiba/residencial-felice-cond-club-1-vaga-na-garagem-imovel-caixa-economica-federal-cef-1957424-1555526404587-venda-direta-caixa"
         }
     }
     lambda_handler(event, {})

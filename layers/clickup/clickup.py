@@ -61,45 +61,94 @@ def create_client(client: PersonalInformation, property: PropertyInformation):
     secret = json.loads(response["SecretString"])
 
     API_TOKEN = secret["PERSONAL"]
-
-    description = f"""
-Informações do Cliente:
-
-Nome Completo: {client.full_name}
-CPF/CNPJ: {client.cpf_cnpj}
-Telefone: {client.phone_number}
-Email: {client.email}
-Profissão: {client.profession}
-Endereço: {client.address}
-Cidade: {client.city}
-Estado: {client.state}
-País: {client.country}
-Finalidade da Propriedade: {client.property_purpose}
-Experiência em Leilões: {client.auction_experience}
-Perguntas: {client.auction_question}
-
-Informações da Propriedade Desejada:
-
-Tipo de Propriedade: {property.property_type}
-Cidade: {property.property_city}
-Estado: {property.property_state}
-Bairros: {', '.join(property.property_neighborhood)}
-Orçamento: {property.budget}
-Método de Pagamento: {property.payment_method}
-
-"""
-
-    task_data = {
-        'name': client.full_name,
-        'description': description,
-        'assignees': [],    
-        'tags': [],         
-    }
-
+    
     headers = {
         'Authorization': API_TOKEN,
         'Content-Type': 'application/json',
     }
+
+    response = requests.get(f'https://api.clickup.com/api/v2/list/{LIST_ID}/field', headers=headers)
+    custom_fields = response.json().get('fields', [])
+    custom_fields = {field["name"]: field["id"] for field in custom_fields}
+
+
+    task_data = {
+        'name': client.full_name,
+        'assignees': [],    
+        'tags': [],
+        'custom_fields': [
+        
+            {
+                "id": custom_fields["CPF/CNPJ"],
+                "value": client.cpf_cnpj
+            },
+            {
+                "id": custom_fields["Email"],
+                "value": client.email
+            },
+            {
+                "id": custom_fields["Celular"],
+                "value": client.phone_number
+            },
+            {
+                "id": custom_fields["Endereço"],
+                "value": client.address
+            },
+            {
+                "id": custom_fields["Cidade"],
+                "value": client.city
+            },
+            {
+                "id": custom_fields["Estado"],
+                "value": client.state
+            },
+            {
+                "id": custom_fields["País:"],
+                "value": client.country
+            },
+            {
+                "id": custom_fields["Profissão:"],
+                "value": client.profession
+            },
+            {
+                "id": custom_fields["Experiência em Leilão"],
+                "value": client.auction_experience
+            },
+            {
+                "id": custom_fields["Dúvidas"],
+                "value": client.auction_question
+            },
+            {
+                "id": custom_fields["Valor de Investimento:"],
+                "value": property.budget
+            },
+            {
+                "id": custom_fields["Estado de Interesse:"],
+                "value": property.property_state
+            },
+            {
+                "id": custom_fields["Cidade de Interesse:"],
+                "value": property.property_city
+            },
+            {
+                "id": custom_fields["Bairros de Interesse:"],
+                "value": ", ".join(property.property_neighborhood)
+            },
+            {
+                "id": custom_fields["Tipo de Imóvel"],
+                "value": property.property_type
+            },
+            {
+                "id": custom_fields["Finalidade do Imóvel:"],
+                "value": client.property_purpose
+            },
+            {
+                "id": custom_fields["Forma de Pagamento"],
+                "value": property.payment_method
+            }
+        ]
+    }
+
 
     response = requests.post(f'https://api.clickup.com/api/v2/list/{LIST_ID}/task', json=task_data, headers=headers)
     return response.json()

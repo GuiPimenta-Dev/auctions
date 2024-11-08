@@ -177,7 +177,9 @@ def calculate_desagio(auction):
 
 def get_clients():
     worksheet = excel_client.open(title=spreadsheet_name, folder_id=folder_id).get_worksheet(1)
-    return worksheet.get_all_records()
+    clients = worksheet.get_all_records()
+    clients.sort(key=lambda x: x["Nome Completo:"])
+    return clients
 
 def get_auction_row(name, url):
     worksheet = excel_client.open(title=spreadsheet_name, folder_id=folder_id).get_worksheet(0)

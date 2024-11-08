@@ -5,9 +5,8 @@ from urllib.parse import parse_qs, urlparse
 import requests
 from auction import Auction, Bid, Bids
 from bs4 import BeautifulSoup
-from fuzzywuzzy import process
+from fuzzywuzzy import process,fuzz
 from geopy.geocoders import Photon
-from tenacity import retry, stop_after_attempt, wait_fixed
 
 # Dictionary with property types and their IDs
 PROPERTY_TYPES = {
@@ -65,7 +64,7 @@ def find_most_probable_city(city_name):
         return matched_entry["id"]
     return None
 
-def get_auction(box, state):
+def get_auction(box, client):
     name = css_select(box, "div.address p b")
     address = css_select(box, "div.address p span")
     image = box.select_one("img").get("src")
@@ -81,7 +80,7 @@ def get_auction(box, state):
     appraised_value = css_select(soup, "div.appraised h2")
     discount_value = css_select(soup, "h2.discount-price")
     bids = extract_bid(css_select(soup, "div.bids"))
-    district = find_district(soup)
+    district = find_district(soup, client, address)
     general_info = get_general_info(soup)
     type_modality = next(
         (i["text"] for i in general_info if i["title"] == "Tipo:"), None
@@ -97,7 +96,7 @@ def get_auction(box, state):
         name=name,
         type_=type_,
         modality=modality,
-        state=state,
+        state=client["Estado de interesse:"],
         city=city,
         address=address,
         district=district,
@@ -224,8 +223,14 @@ def is_value_in_budget(value1, value2):
     return amount1 > amount2
 
 
-def find_district(soup):
+def find_district(soup, client, address):
 
+    neighborhoods_of_interest = client["Bairros de interesse:"].split(",")
+    for neighborhood in neighborhoods_of_interest:
+        # Check if the neighborhood is similar enough to be considered a match
+        if fuzz.partial_ratio(neighborhood.strip().lower(), address.lower()) >= 90:
+            return neighborhood.strip().title()
+        
     # Find the iframe element by title
     iframe_element = soup.find('iframe', title='geolocalização')
 
@@ -241,9 +246,8 @@ def find_district(soup):
         if 'q' in query_params:
             coordinates = query_params['q'][0]  # Get the first coordinate value
             latitude, longitude = coordinates.split(',')
-            geolocator = Photon(user_agent="measurements")
-            
             try:
+                geolocator = Photon(user_agent="measurements", timeout=5)
                 location = geolocator.reverse((latitude, longitude), exactly_one=True)
                 neighborhood = location.raw["properties"].get("district") or location.raw["properties"].get("name")
                 return neighborhood

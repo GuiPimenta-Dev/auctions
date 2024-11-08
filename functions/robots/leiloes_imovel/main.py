@@ -50,7 +50,7 @@ def lambda_handler(event, context):
 
             boxes = soup.select("div.place-box")
             for box in boxes:
-                auction = utils.get_auction(box, client["Estado de interesse:"])
+                auction = utils.get_auction(box, client)
 
                 if auction.url == "https://www.leilaoimovel.com.br/imoveis-springfield":
                     continue

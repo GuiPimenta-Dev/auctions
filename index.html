@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário de Interesse</title>
     <link rel="icon" href="logo.png" type="image/png"> <!-- Usando a logo como favicon -->
+    <script src="https://cdn.jsdelivr.net/npm/cleave.js@1.6.0"></script> <!-- Include Cleave.js -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -196,7 +197,7 @@
 
             <div class="form-group">
                 <label for="budget">Valor de orçamento destinado ao investimento:</label>
-                <input type="text" id="budget" name="budget" placeholder="R$ 1000.000">
+                <input type="text" id="budget" placeholder="500.000" oninput="formatMoneyInput(this)">
             </div>
 
             <div class="form-group">
@@ -253,6 +254,14 @@
     </div>
 
     <script>
+        function formatMoneyInput(input) {
+            // Remove any non-numeric characters
+            let value = input.value.replace(/[^0-9]/g, '');
+
+            // Add thousands separator
+            input.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
         document.getElementById('interest_form').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent default form submission
 
@@ -262,7 +271,14 @@
             formData.forEach((value, key) => {
                 data[key] = value;
             });
+            currencyfield = document.getElementById('budget')
+            currencyfield.addEventListener("input", format, false)
 
+            function format (){
+            let val = +currencyfield.value;
+            document.querySelector(".textfield_label").textContent =  val.toLocaleString('fullwide', {maximumFractionDigits:2, style:'currency', currency:'USD', useGrouping:true}) 
+
+            }
             // Format the data as needed for the API
             const formattedData = {
                 personal_information: {

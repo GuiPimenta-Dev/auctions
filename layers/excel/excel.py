@@ -46,8 +46,10 @@ def update_auctions_spreadsheet(auction, client, search_url):
 
     worksheet = excel_client.open(title=spreadsheet_name, folder_id=folder_id).get_worksheet(0)
     
-    # Get all values from the sheet
-    current_date = datetime.datetime.now(datetime.timezone.utc).strftime("%d/%m/%Y")
+    brazil_offset = datetime.timedelta(hours=-3)
+    brazil_timezone = datetime.timezone(brazil_offset)
+    current_date = datetime.datetime.now(brazil_timezone).strftime("%d/%m/%Y %H:%M:%S")
+
 
     sheet_data = worksheet.get_all_records()
 

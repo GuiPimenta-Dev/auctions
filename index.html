@@ -196,7 +196,7 @@
 
             <div class="form-group">
                 <label for="budget">Valor de orçamento destinado ao investimento:</label>
-                <input type="text" id="budget" placeholder="500.000" oninput="formatMoneyInput(this)">
+                <input type="text" id="budget" name="budget" placeholder="700.000" oninput="formatMoneyInput(this)">
             </div>
 
             <div class="form-group">
@@ -255,9 +255,18 @@
     <script>
         
 
+        
+        function formatMoneyInput(input) {
+            // Remove any non-numeric characters
+            let value = input.value.replace(/[^0-9]/g, '');
+
+            // Add thousands separator
+            input.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+         
+
         document.getElementById('interest_form').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent default form submission
-
             // Collect form data
             const formData = new FormData(this);
             const data = {};
@@ -265,13 +274,9 @@
                 data[key] = value;
             });
 
-            function formatMoneyInput(input) {
-            // Remove any non-numeric characters
-            let value = input.value.replace(/[^0-9]/g, '');
+            console.log(data);
 
-            // Add thousands separator
-            input.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        }
+        
             // Format the data as needed for the API
             const formattedData = {
                 personal_information: {
@@ -290,7 +295,7 @@
                     property_purpose: data.property_purpose,
                 },
                 property_information: {
-                    budget: data.budget.replace('R$ ', ''),
+                    budget: data.budget,
                     property_type: data.property_type,
                     property_state: data.property_state,
                     property_city: data.property_city,

@@ -6,9 +6,7 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from tenacity import retry, stop_after_attempt, wait_fixed
 import os
-from dotenv import load_dotenv
 
-load_dotenv()
 # Initialize AWS Secrets Manager
 secrets_manager = boto3.client('secretsmanager')
 

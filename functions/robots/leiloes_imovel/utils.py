@@ -172,6 +172,7 @@ def find_district_codes(client_districts, city):
     try:
         areas = response.json()["areas"]
         client_districts = client_districts.split(",")  # Convert to list
+        client_districts = [district.strip() for district in client_districts]
 
         for area in areas:
             # Use fuzzy matching to find the best match in client_districts

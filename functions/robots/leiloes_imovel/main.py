@@ -1,7 +1,8 @@
 import excel
 import requests
 import string_utils
-from . import utils
+# from . import utils
+import utils
 from bs4 import BeautifulSoup
 
 
@@ -9,7 +10,6 @@ from bs4 import BeautifulSoup
 def lambda_handler(event, context):
 
     clients = excel.get_clients()
-
     for client in clients:
         property_types = utils.find_property_types(client["Tipo de imóvel:"])
         state_of_interest = string_utils.find_state_based_on_state_of_interest(client["Estado de interesse:"])

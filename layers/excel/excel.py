@@ -5,7 +5,10 @@ import boto3
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from tenacity import retry, stop_after_attempt, wait_fixed
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 # Initialize AWS Secrets Manager
 secrets_manager = boto3.client('secretsmanager')
 
@@ -151,7 +154,7 @@ def update_clients_spreadsheet(client):
         "Bairros de interesse": ", ".join(client["property_information"]["property_neighborhood"]),
         "Tipo de imóvel": client["property_information"]["property_type"],
         "Finalidade do imóvel": client["personal_information"]["property_purpose"],
-        "Formas de pagamento relevantes": client["property_information"]["payment_method"],
+        "Formas de pagamento relevantes": ", ".join(client["property_information"]["payment_method"]),
     }
 
     # Prepare values in the order of the columns

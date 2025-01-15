@@ -92,7 +92,7 @@ if __name__ == "__main__":
                     "property_city": "São Paulo",
                     "property_neighborhood": ["Vila Mariana"],
                     "budget": 500000,
-                    "payment_method": "financing",
+                    "payment_method": ['Entrada + financiamento', 'Entrada + parcelamento sem juros'],
                 },
             }
         )

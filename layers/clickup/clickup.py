@@ -21,7 +21,7 @@ class PersonalInformation:
     country: str
     property_purpose: str
     auction_experience: str
-    auction_question: str
+    auction_question: str = ""
 
 
 @dataclass
@@ -87,7 +87,7 @@ def create_client(client: PersonalInformation, property: PropertyInformation):
                 "value": client.email
             },
             {
-                "id": custom_fields["Celular"],
+                "id": custom_fields["Número celular:"],
                 "value": client.phone_number
             },
             {
@@ -116,11 +116,11 @@ def create_client(client: PersonalInformation, property: PropertyInformation):
             },
             {
                 "id": custom_fields["Dúvidas"],
-                "value": client.auction_question
+                "value": client.auction_question or "Nenhuma"
             },
             {
                 "id": custom_fields["Valor de Investimento:"],
-                "value": property.budget
+                "value": str(property.budget)
             },
             {
                 "id": custom_fields["Estado de Interesse:"],

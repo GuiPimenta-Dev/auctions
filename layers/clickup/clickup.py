@@ -151,6 +151,7 @@ def create_client(client: PersonalInformation, property: PropertyInformation):
 
 
     response = requests.post(f'https://api.clickup.com/api/v2/list/{LIST_ID}/task', json=task_data, headers=headers)
+    print(f"Clickup: {response.json()} ")
     return response.json()
 
 

@@ -144,7 +144,7 @@ def create_client(client: PersonalInformation, property: PropertyInformation):
             },
             {
                 "id": custom_fields["Forma de Pagamento"],
-                "value": property.payment_method
+                "value": ", ".join(property.payment_method)
             }
         ]
     }

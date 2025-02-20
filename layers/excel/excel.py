@@ -24,7 +24,7 @@ creds = ServiceAccountCredentials.from_json_keyfile_dict(google_creds)
 excel_client = gspread.authorize(creds)
 
 # Access the spreadsheet by name and folder ID
-spreadsheet_name = "Imóveis"
+spreadsheet_name = ".Imóveis"
 folder_id = ''  # Folder ID on Google Drive (if necessary)
 
 

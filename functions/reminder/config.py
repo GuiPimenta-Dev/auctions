@@ -7,7 +7,9 @@ class ReminderConfig:
             name="Reminder",
             path="./functions/reminder",
             description="pacients reminder",
-            timeout=15              
+            layers=[services.layers.pandas_layer, services.layers.robots_layer],
+            timeout=15,   
+            use_default=False           
         )
 
         services.event_bridge.schedule(

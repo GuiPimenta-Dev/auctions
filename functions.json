@@ -41,5 +41,18 @@
             }
         ],
         "invocations": []
+    },
+    {
+        "name": "Reminder",
+        "path": "./functions/reminder",
+        "description": "pacients reminder",
+        "timeout": 900,
+        "triggers": [
+            {
+                "service": "event_bridge",
+                "trigger": "pacients"
+            }
+        ],
+        "invocations": []
     }
 ]

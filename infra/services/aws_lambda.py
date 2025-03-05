@@ -24,9 +24,11 @@ class Lambda:
         memory_size=128,
         runtime=Runtime.PYTHON_3_9,
         timeout=1,
+        use_default=True,
     ):
 
-        layers = layers + [
+        if use_default:
+            layers = layers + [
             self.layers.string_utils,
             self.layers.robots_layer,
             self.layers.excel_layer,

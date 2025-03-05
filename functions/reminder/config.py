@@ -7,7 +7,7 @@ class ReminderConfig:
             name="Reminder",
             path="./functions/reminder",
             description="pacients reminder",
-            layers=[services.layers.pandas_layer, services.layers.robots_layer],
+            layers=[services.layers.pandas_layer, services.layers.robots_layer, services.layers.xlsxwriter_layer],
             timeout=15,   
             use_default=False           
         )

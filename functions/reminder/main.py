@@ -36,7 +36,6 @@ def lambda_handler(event, context):
         "Exames PN": exames_pn,
         "Vacina": vacina
     }
-    excel.save_to_excel(todos)
     
     nao_atende = {
         "PA HAS": [item for item in pa_has if item["atende_indicador"] == "Não"],

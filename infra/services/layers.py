@@ -48,3 +48,8 @@ class Layers:
             id='PandasLayer',
             layer_version_arn='arn:aws:lambda:us-east-2:336392948345:layer:AWSSDKPandas-Python39:28',
         )
+        self.xlsxwriter_layer = _lambda.LayerVersion.from_layer_version_arn(
+            scope,
+            id='XlsxwriterLayer',
+            layer_version_arn='arn:aws:lambda:us-east-2:412381763358:layer:xlsxwriter:1',
+         )

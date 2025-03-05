@@ -1,3 +1,4 @@
+from functions.reminder.config import ReminderConfig
 from aws_cdk import Stack
 from constructs import Construct
 
@@ -22,3 +23,6 @@ class LambdaStack(Stack):
 
         # CreateCard
         CreateCardConfig(self.services)
+
+        # Reminder
+        ReminderConfig(self.services)

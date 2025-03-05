@@ -76,7 +76,7 @@ def lambda_handler(event, context):
     
     # Configuração do e-mail
     sender_email = "roaletatiana@gmail.com"
-    receiver_email = "guialvespimenta27@gmail.com"
+    receiver_email = "roaletatiana@gmail.com"
     password = "eniu ycej tjfe exkm"  
     
     today = datetime.datetime.now().strftime("%d/%m/%Y")

@@ -1,8 +1,8 @@
 import datetime
 import json
 from dataclasses import dataclass
-import utils
-import excel
+from . import utils
+from . import excel
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -105,5 +105,3 @@ def lambda_handler(event, context):
         print("E-mail enviado com sucesso!")
     except Exception as e:
         print(f"Erro ao enviar e-mail: {e}")
-
-lambda_handler(Input(), None)

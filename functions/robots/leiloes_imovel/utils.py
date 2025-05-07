@@ -48,9 +48,15 @@ def find_property_types(inputs: list) -> list:
 
 from fuzzywuzzy import fuzz, process
 
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0 Safari/537.36",
+    "Accept": "application/json, text/javascript, */*; q=0.01",
+    "Referer": "https://www.leilaoimovel.com.br/",
+    "X-Requested-With": "XMLHttpRequest"
+}
 
 def find_most_probable_city(city_name):
-    all_cities = requests.get("https://www.leilaoimovel.com.br/getAllCities").json()["locations"]
+    all_cities = requests.get("https://www.leilaoimovel.com.br/getAllCities", headers=headers).json()["locations"]
 
     # Create a list of all names from the data array for fuzzy matching
     name_list = [entry['name'] for entry in all_cities]
@@ -167,7 +173,7 @@ def get_files(soup):
 
 def find_district_codes(client_districts, city):
     districts = []
-    response = requests.get(f"https://www.leilaoimovel.com.br/getAreas?list={city}")
+    response = requests.get(f"https://www.leilaoimovel.com.br/getAreas?list={city}", headers=headers)
     
     try:
         areas = response.json()["areas"]

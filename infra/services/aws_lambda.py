@@ -29,7 +29,7 @@ class Lambda:
 
         if use_default:
             layers = layers + [
-            self.layers.string_utils,
+            self.layers.cloudscraper_layer,
             self.layers.robots_layer,
             self.layers.excel_layer,
             self.layers.auction_layer,

@@ -53,3 +53,9 @@ class Layers:
             id='XlsxwriterLayer',
             layer_version_arn='arn:aws:lambda:us-east-2:412381763358:layer:xlsxwriter:1',
          )
+
+        self.cloudscraper_layer = _lambda.LayerVersion.from_layer_version_arn(
+            scope,
+            id='CloudscraperLayer',
+            layer_version_arn='arn:aws:lambda:us-east-2:412381763358:layer:cloudscraper:3',
+         )

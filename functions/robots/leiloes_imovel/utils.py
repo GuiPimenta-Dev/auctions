@@ -56,7 +56,11 @@ headers = {
 }
 
 def find_most_probable_city(city_name):
-    all_cities = requests.get("https://www.leilaoimovel.com.br/getAllCities", headers=headers).json()["locations"]
+    response = requests.get("https://www.leilaoimovel.com.br/getAllCities", headers=headers)
+    print(response.status_code)
+    print(response.text)
+    
+    all_cities = response.json()["locations"]
 
     # Create a list of all names from the data array for fuzzy matching
     name_list = [entry['name'] for entry in all_cities]

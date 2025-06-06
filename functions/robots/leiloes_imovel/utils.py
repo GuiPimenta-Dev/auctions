@@ -55,11 +55,6 @@ def find_property_types(inputs: list) -> list:
 def find_most_probable_city(city_name):
     response = scraper.get("https://www.leilaoimovel.com.br/getAllCities", headers=headers)
 
-    if "application/json" not in response.headers.get("Content-Type", ""):
-        print("Erro: resposta inesperada ao buscar cidades.")
-        print(response.text[:500])
-        return None
-
     all_cities = response.json()["locations"]
     name_list = [entry['name'] for entry in all_cities]
     best_match = process.extractOne(city_name, name_list, scorer=fuzz.ratio)
@@ -180,8 +175,6 @@ def find_district_codes(client_districts, city):
     response = scraper.get(f"https://www.leilaoimovel.com.br/getAreas?list={city}", headers=headers)
 
     try:
-        if "application/json" not in response.headers.get("Content-Type", ""):
-            raise ValueError("Unexpected response format")
         areas = response.json()["areas"]
         client_districts = [district.strip() for district in client_districts.split(",")]
 

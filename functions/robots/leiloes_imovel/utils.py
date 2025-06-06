@@ -51,20 +51,44 @@ def find_property_types(inputs: list) -> list:
 
     return ",".join(results)
 
-
 def find_most_probable_city(city_name):
+    print(f"[DEBUG] Input city_name: '{city_name}'")
+
     response = scraper.get("https://www.leilaoimovel.com.br/getAllCities", headers=headers)
 
-    all_cities = response.json()["locations"]
+    print(f"[DEBUG] Status code: {response.status_code}")
+    print(f"[DEBUG] Content-Type: {response.headers.get('Content-Type', '')}")
+
+    # Peek at the response content
+    response_snippet = response.text[:500].replace("\n", "").replace("\r", "")
+    print(f"[DEBUG] Response snippet: {response_snippet}")
+
+    # Check for Cloudflare or captcha
+    if "cf-chl-bypass" in response.text.lower() or "Cloudflare" in response.text or "/cdn-cgi/" in response.text:
+        print("[WARNING] Detected Cloudflare challenge or bot protection.")
+        return None
+
+    try:
+        all_cities = response.json().get("locations", [])
+    except Exception as e:
+        print(f"[ERROR] Failed to parse JSON: {e}")
+        return None
+
+    if not city_name or not city_name.strip():
+        print("[WARN] Empty city_name provided, skipping matching.")
+        return None
+
+    # Fuzzy match
     name_list = [entry['name'] for entry in all_cities]
-    best_match = process.extractOne(city_name, name_list, scorer=fuzz.ratio)
+    best_match = process.extractOne(city_name.strip(), name_list, scorer=fuzz.ratio)
 
     if best_match:
+        print(f"[DEBUG] Best match: {best_match}")
         matched_entry = next(entry for entry in all_cities if entry['name'] == best_match[0])
         return matched_entry["id"]
 
+    print("[INFO] No city match found.")
     return None
-
 
 def get_auction(box, client):
     name = css_select(box, "div.address p b")

@@ -1,8 +1,8 @@
 import excel
 import cloudscraper
 import auction as string_utils
-# import utils
-from . import utils
+import utils
+# from . import utils
 from bs4 import BeautifulSoup
 
 

@@ -11,7 +11,6 @@ import os
 import gspread
 from google.oauth2.service_account import Credentials
 from google.oauth2 import service_account
-import pandas as pd
 import boto3
 from botocore.exceptions import ClientError
 

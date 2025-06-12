@@ -1,0 +1,16 @@
+services:
+  - type: cron
+    name: leiloes-imovel-cron
+    env: python
+    schedule: "0 4 * * *" # 1 AM Brazil time (UTC-3) = 4 AM UTC
+    buildCommand: pip install -r robots/leiloes_imovel/requirements.txt
+    startCommand: python robots/leiloes_imovel/run.py
+    envVars:
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_REGION
+        value: us-east-1
+      - key: GOOGLE_CREDENTIALS_SECRET_NAME
+        value: GoogleSheets

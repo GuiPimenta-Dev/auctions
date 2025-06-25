@@ -104,10 +104,10 @@ class GoogleSheetsClient:
     def update_auctions_spreadsheet(self, auction: Auction, client_name: str, search_url: str):
         # Get or create the Auctions worksheet
         try:
-            auctions_worksheet = self.spreadsheet.worksheet("Leilões")
+            auctions_worksheet = self.spreadsheet.worksheet("Imóveis")
         except gspread.exceptions.WorksheetNotFound:
             auctions_worksheet = self.spreadsheet.add_worksheet(
-                title="Leilões",
+                title="Imóveis",
                 rows=1000,
                 cols=20
             )
@@ -162,10 +162,15 @@ class GoogleSheetsClient:
 
         # Check if auction already exists
         existing_data = auctions_worksheet.get_all_records()
-        for row in existing_data:
-            if row["URL do Imóvel"] == auction.url and row["Nome do Cliente"] == client_name:
-                return  # Skip if auction already exists for this client
+        for idx, row in enumerate(existing_data):
+            if row["Site"] == auction.url and row["Cliente"] == client_name:
+                print(f"[DEBUG] Auction already exists for this client: {auction.url}")
+                
+                now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                row_index = idx + 2  # +2 porque o índice começa em 0 e a primeira linha é o cabeçalho
 
+                auctions_worksheet.update_cell(row_index, 1, now)  # Atualiza apenas a coluna 1 (Data de Inclusão)
+                return  
         # Append new auction
         auctions_worksheet.append_row(row_data)
 

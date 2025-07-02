@@ -13,6 +13,8 @@ from google.oauth2.service_account import Credentials
 from google.oauth2 import service_account
 import boto3
 from botocore.exceptions import ClientError
+from layers.zoho.zoho import send_to_zoho
+
 
 @dataclass
 class Bid:
@@ -417,7 +419,9 @@ class LeiloesImovelRobot:
 
                     if auction.url == "https://www.leilaoimovel.com.br/imoveis-springfield":
                         continue
-                    self.sheets_client.update_auctions_spreadsheet(auction, client["Nome Completo:"], url)
+                    #self.sheets_client.update_auctions_spreadsheet(auction, client["Nome Completo:"], url)
+                    send_to_zoho(auction, client)
+                    
 
 def lambda_handler(event, context):
     robot = LeiloesImovelRobot()

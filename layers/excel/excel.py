@@ -33,7 +33,7 @@ def update_auctions_spreadsheet(auction, client, search_url):
 
     # Spreadsheet columns for reference (including the "Atualizado em" column)
     columns = [
-        "Atualizado em", "Criar Card", "Cliente",
+        "Data de Inclusão", "Criar Card", "Cliente",
         "Estado", "Cidade", "Bairro", "Nome do Imóvel", "Endereço",
         "Data 1o Leilão", "Data 2o Leilão", "Valor de Avaliação", "Lance Inicial",
         "Deságio", "Valor 1a Hasta", "Valor 2a Hasta",

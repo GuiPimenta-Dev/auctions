@@ -1,6 +1,6 @@
 import cloudscraper
 from bs4 import BeautifulSoup
-from datetime import datetime
+import datetime
 import re
 from fuzzywuzzy import process, fuzz
 from typing import List, Dict, Optional
@@ -13,6 +13,7 @@ from google.oauth2.service_account import Credentials
 from google.oauth2 import service_account
 import boto3
 from botocore.exceptions import ClientError
+from tenacity import retry, stop_after_attempt, wait_fixed
 
 @dataclass
 class Bid:
@@ -23,6 +24,24 @@ class Bid:
 class Bids:
     first_bid: Bid
     second_bid: Bid
+
+def calculate_desagio(auction):
+    try:
+        appraised_value = auction.appraised_value
+        first_bid_value = auction.bids.first_bid.value if auction.bids and auction.bids.first_bid else None
+
+        appraised_value_float = float(appraised_value.replace("R$ ", "").replace(".", "").replace(",", ".")) if appraised_value else None
+        first_bid_value_float = float(first_bid_value.replace("R$ ", "").replace(".", "").replace(",", ".")) if first_bid_value else None
+
+        if appraised_value_float and first_bid_value_float:
+            desagio = f"R$ {round(appraised_value_float - first_bid_value_float,2)}"
+        else:
+            desagio = None
+    except:
+        desagio = None
+    
+    return desagio
+
 
 @dataclass
 class Auction:
@@ -80,6 +99,7 @@ class GoogleSheetsClient:
         self.client = gspread.authorize(self.credentials)
         self.spreadsheet = self.client.open(".Imóveis")
         self.worksheet = self.spreadsheet.worksheet("Clientes")
+        self.excel_client = gspread.authorize(self.credentials)
 
     def _get_credentials(self):
         # Initialize AWS Secrets Manager
@@ -101,78 +121,94 @@ class GoogleSheetsClient:
         data = self.worksheet.get_all_records()
         return data
 
-    def update_auctions_spreadsheet(self, auction: Auction, client_name: str, search_url: str):
-        # Get or create the Auctions worksheet
-        try:
-            auctions_worksheet = self.spreadsheet.worksheet("Imóveis")
-        except gspread.exceptions.WorksheetNotFound:
-            auctions_worksheet = self.spreadsheet.add_worksheet(
-                title="Imóveis",
-                rows=1000,
-                cols=20
-            )
-            # Add headers
-            headers = [
-                "Nome do Cliente",
-                "Nome do Imóvel",
-                "Tipo",
-                "Modalidade",
-                "Estado",
-                "Cidade",
-                "Endereço",
-                "Bairro",
-                "Valor de Avaliação",
-                "Valor com Desconto",
-                "Área (m²)",
-                "Quartos",
-                "Vagas",
-                "URL da Imagem",
-                "URL do Imóvel",
-                "URL da Busca",
-                "Data do Leilão",
-                "Valor do Leilão",
-                "Data da Segunda Proposta",
-                "Valor da Segunda Proposta"
-            ]
-            auctions_worksheet.append_row(headers)
+    @retry(wait=wait_fixed(30), stop=stop_after_attempt(10))  # Wait 5 seconds and retry up to 10 times
+    def update_auctions_spreadsheet(self, auction, client, search_url):
 
-        # Prepare row data
-        row_data = [
-            client_name,
-            auction.name,
-            auction.type_ or "-",
-            auction.modality or "-",
-            auction.state,
-            auction.city,
-            auction.address,
-            auction.district or "-",
-            auction.appraised_value,
-            auction.discount_value,
-            auction.m2 or "-",
-            auction.bedrooms or "-",
-            auction.parking or "-",
-            auction.image,
-            auction.url,
-            search_url,
-            auction.bids.first_bid.date or "-",
-            auction.bids.first_bid.value or "-",
-            auction.bids.second_bid.date or "-",
-            auction.bids.second_bid.value or "-"
+        # Spreadsheet columns for reference (including the "Atualizado em" column)
+        columns = [
+            "Data de Inclusão", "Criar Card", "Cliente",
+            "Estado", "Cidade", "Bairro", "Nome do Imóvel", "Endereço",
+            "Data 1o Leilão", "Data 2o Leilão", "Valor de Avaliação", "Lance Inicial",
+            "Deságio", "Valor 1a Hasta", "Valor 2a Hasta",
+            "Valores somados com leiloeiro + taxas edital 1a Hasta",
+            "Valores somados com leiloeiro + taxas edital 2a Hasta", "Tipo de Imóvel", "Modalidade de Venda","Metragem do imóvel",
+            "Medida da área privativa ou de uso exclusivo", "Número dormitórios", "Vagas garagem",
+            "Modelo de Leilão", "Status", "Fase do Leilão", "Site", "Observações",
+            "Valor da Entrada 25% (1a Hasta)", 
+            "Valor da Entrada 25% (2a Hasta)", "Mais 30 parcelas de:", "Valor m2 para região", "Imagem", "Busca"
         ]
 
-        # Check if auction already exists
-        existing_data = auctions_worksheet.get_all_records()
-        for idx, row in enumerate(existing_data):
-            if row["Site"] == auction.url and row["Cliente"] == client_name:
-                print(f"[DEBUG] Auction already exists for this client: {auction.url}")
-                
-                now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-                row_index = idx + 2  # +2 porque o índice começa em 0 e a primeira linha é o cabeçalho
+        worksheet = self.excel_client.open(title=".Imóveis").get_worksheet(0)
 
-                auctions_worksheet.update_cell(row_index, 1, now)  # Atualiza apenas a coluna 1 (Data de Inclusão)
-                return  
-        # Append new auction
-        auctions_worksheet.append_row(row_data)
+        brazil_offset = datetime.timedelta(hours=-3)
+        brazil_timezone = datetime.timezone(brazil_offset)
+        current_date = datetime.datetime.now(brazil_timezone).strftime("%d/%m/%Y %H:%M:%S")
+
+
+        sheet_data = worksheet.get_all_records()
+
+        existing_row_index = next(
+            (
+                idx + 2
+                for idx, record in enumerate(sheet_data)
+                if record.get("Site") == auction.url and record.get("Cliente") == client
+            ),
+            None,
+        )
+        
+        desagio = calculate_desagio(auction)
+
+        data = {
+            "Data de Inclusão": current_date,
+            "Criar Card": None,
+            "Cliente": client,
+            "Estado": auction.state,
+            "Cidade": auction.city,
+            "Endereço": auction.address,
+            "Bairro": auction.district,
+            "Nome do Imóvel": auction.name,
+            "Data 1o Leilão": auction.bids.first_bid.date,
+            "Data 2o Leilão": auction.bids.second_bid.date,
+            "Valor de Avaliação": auction.appraised_value,
+            "Lance Inicial": auction.discount_value,
+            "Deságio": desagio,
+            "Valor 1a Hasta": auction.bids.first_bid.value,
+            "Valor 2a Hasta": auction.bids.second_bid.value,
+            "Valores somados com leiloeiro + taxas edital 1a Hasta": None,
+            "Valores somados com leiloeiro + taxas edital 2a Hasta": None,
+            "Tipo de Imóvel": auction.type_,
+            "Modalidade de Venda": auction.modality,
+            "Metragem do imóvel": auction.m2,
+            "Medida da área privativa ou de uso exclusivo": None,
+            "Número dormitórios": auction.bedrooms,
+            "Vagas garagem": auction.parking,
+            "Modelo de Leilão": None,
+            "Status": None,
+            "Fase do Leilão": None,
+            "Site": auction.url,
+            "Observações": None,
+            "Valor da Entrada 25% (1a Hasta)": None,
+            "Mais 30 parcelas de:": None,
+            "Valor da Entrada 25% (2a Hasta)": None,
+            "Valor m2 para região": None,
+            "Imagem": auction.image,
+            "Busca": search_url,
+        }
+
+        # Prepare values in the order of the columns
+        row_values = [data[col] for col in columns]
+
+        if existing_row_index:
+            # Update the entire row (including the "Atualizado em" field)
+            worksheet.update(f'A{existing_row_index}:AH{existing_row_index}', [row_values], raw=False)
+        else:
+            # Add a new row
+            next_row = len(sheet_data) + 2
+            worksheet.insert_row(row_values, next_row)
+            card = f"https://sv1th8vfbh.execute-api.us-east-2.amazonaws.com/prod/card?name={client}&url={auction.url}"
+            worksheet.update_acell(f'B{next_row}', f"=HYPERLINK(\"{card}\"; \"Criar Card\")")
+        
+        
 
 class LeiloesImovelRobot:
     def __init__(self):
@@ -324,7 +360,7 @@ class LeiloesImovelRobot:
 
         dates = re.findall(date_pattern, input_string)
         values = re.findall(value_pattern, input_string)
-        date_objs = [datetime.strptime(date, '%d/%m/%Y às %H:%M') for date in dates]
+        date_objs = [datetime.datetime.strptime(date, '%d/%m/%Y às %H:%M') for date in dates]
 
         result = {
             'first_date': date_objs[0].strftime('%d/%m/%Y %H:%M') if date_objs else None,
@@ -387,7 +423,7 @@ class LeiloesImovelRobot:
                 continue
 
             try:
-                budget = float(client["Valor de orçamento destinado ao investimento:"].replace(".", "").replace(",", "."))
+                budget = float(str(client["Valor de orçamento destinado ao investimento:"]).replace(".", "").replace(",", "."))
                 budget = str(budget * 100).replace(".", "").replace(",", "")
             except:
                 continue

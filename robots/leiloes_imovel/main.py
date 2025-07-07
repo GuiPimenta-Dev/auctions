@@ -302,7 +302,7 @@ class LeiloesImovelRobot:
         image = box.select_one("img").get("src")
         property_url = "https://www.leilaoimovel.com.br" + box.select_one("a").get("href")
 
-        response = self.scraper.get(property_url)
+        response = self.scraper.get(property_url, headers=self.headers)
         soup = BeautifulSoup(response.text, "html.parser")
 
         city = self.css_select(soup, "nav#breadcrumb li:nth-child(4) span")
@@ -430,8 +430,7 @@ class LeiloesImovelRobot:
 
             url = f"https://www.leilaoimovel.com.br/encontre-seu-imovel?s=&tipo={property_types}&cidade={city}&bairro={district_codes}&preco_max={budget}"
             print(url)
-            response = self.scraper.get(url)
-            print(response.text)
+            response = self.scraper.get(url, headers=self.headers)
             print(response.status_code)
 
             soup = BeautifulSoup(response.text, "html.parser")
@@ -446,7 +445,7 @@ class LeiloesImovelRobot:
 
             for page in range(1, number_of_pages + 1):
                 url = f"https://www.leilaoimovel.com.br/encontre-seu-imovel?s=&tipo={property_types}&cidade={city}&pag={page}&bairro={district_codes}&preco_max={budget}"
-                response = self.scraper.get(url)
+                response = self.scraper.get(url, headers=self.headers)
                 soup = BeautifulSoup(response.text, "html.parser")
 
                 boxes = soup.select("div.place-box")

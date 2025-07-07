@@ -438,6 +438,7 @@ class LeiloesImovelRobot:
 
             try:
                 total_results = int(soup.select_one("span.count-places").get_text().strip().split("Imóveis")[0])
+                print(total_results)    
             except:
                 continue
 

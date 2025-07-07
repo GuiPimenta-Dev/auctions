@@ -431,6 +431,8 @@ class LeiloesImovelRobot:
             url = f"https://www.leilaoimovel.com.br/encontre-seu-imovel?s=&tipo={property_types}&cidade={city}&bairro={district_codes}&preco_max={budget}"
             print(url)
             response = self.scraper.get(url)
+            print(response.text)
+            print(response.status_code)
 
             soup = BeautifulSoup(response.text, "html.parser")
 
